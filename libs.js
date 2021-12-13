@@ -281,3 +281,17 @@ getSteamId('https://steamcommunity.com/profiles/76561198030958226/')
         // Error-prone
         // getUserGameStats(steamId).then(data => console.log(data));
     }).catch(err => console.log(err));
+
+
+/**
+ * Compute the trust factor for the given user
+ * @param {Object} info - The user's info object
+ * @returns {Number} - The user's trust factor
+ */
+const trustFactor = (info) => {
+    try {
+        console.log(info);
+    } catch (err) {
+        console.log(err);
+    }
+};
