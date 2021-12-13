@@ -12,6 +12,7 @@ const steamProfileRegExSteamId = /https:\/\/steamcommunity.com\/profiles\/[0-9]{
 // TF2 Game ID
 const gameId = 440;
 
+// Primary Functions
 /**
  * Get the steam id from the user name
  * @param {String} profileUrl - The user's profile url
@@ -55,7 +56,7 @@ const getSteamId = async (profileUrl) => {
 
 
     } catch (err) {
-        console.log(err);
+        throw err;
     }
 };
 
@@ -83,7 +84,7 @@ const getPlayerSummaries = async (steamId) => {
         return players;
 
     } catch (err) {
-        console.log(err);
+        throw err;
     }
 };
 
@@ -112,7 +113,7 @@ const getUserGameStats = async (steamId) => {
         return playerstats;
 
     } catch (err) {
-        console.log(err);
+        throw err;
     }
 };
 
@@ -148,7 +149,7 @@ const getOwnedGames = async (steamId) => {
 
 
     } catch (err) {
-        console.log(err);
+        throw err;
     }
 };
 
@@ -177,7 +178,7 @@ const getRecentlyPlayedGames = async (steamId) => {
         return response;
 
     } catch (err) {
-        console.log(err);
+        throw err;
     }
 };
 
@@ -209,7 +210,7 @@ const getBans = async (steamIds) => {
         return players;
 
     } catch (err) {
-        console.log(err);
+        throw err;
     }
 };
 
@@ -237,7 +238,7 @@ const getFriends = async (steamId) => {
         return friends;
 
     } catch (err) {
-        console.log(err);
+        throw err;
     }
 };
 
@@ -263,21 +264,49 @@ const getSteamLevel = async (steamId) => {
         return player_level;
 
     } catch (err) {
-        console.log(err);
+        throw err;
     }
 };
+
+// Composite Functions
+/**
+ * Calculate the number of user's friends who have VAC Bans
+ * @param {Object} friendList - The user's friend list
+ * @returns {Number} - The number of user's friends who have VAC Bans
+ */
+const getFriendVacBans = async (friendList) => {
+
+    try {
+        // Extract the steam ids from the friend list
+        const steamIds = friendList.map(friend => friend.steamid);
+
+        // Get ban info for all the steam ids
+        const bans = await getBans(steamIds);
+
+        // Filter out ids that have VAC Bans
+        const banned = bans.filter(ban => ban.VACBanned === true).length;
+
+        return banned
+
+    } catch (err) {
+        throw err;
+    }
+
+}
 
 
 getSteamId('https://steamcommunity.com/profiles/76561198030958226/')
     .then(steamId => {
-        // console.log('steamID:', steamId);
+        console.log('steamID:', steamId);
         // getPlayerSummaries(steamId).then(data => console.log(data));
         // getOwnedGames(steamId).then(data => console.log(data));
         // getRecentlyPlayedGames(steamId).then(data => console.log(data));
         // getBans([steamId]).then(data => console.log(data));
-        // getFriends(steamId).then(data => console.log(data));
+        // getFriends(steamId).then(data => {
+        //     // console.log(data)
+        //     getFriendVacBans(data).then(data => console.log(data));
+        // });
         // getSteamLevel(steamId).then(data => console.log(data));
-
         // Error-prone
         // getUserGameStats(steamId).then(data => console.log(data));
     }).catch(err => console.log(err));
@@ -292,6 +321,6 @@ const trustFactor = (info) => {
     try {
         console.log(info);
     } catch (err) {
-        console.log(err);
+        throw err;
     }
 };
