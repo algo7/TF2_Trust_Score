@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/algo7/TF2_Trust_Score/issues"
   },
-  "homepage": "https://github.com/algo7/TF2_Trust_Score#readme"
+  "homepage": "https://github.com/algo7/TF2_Trust_Score#readme",
+  "dependencies": {
+    "axios": "^0.24.0"
+  }
 }
