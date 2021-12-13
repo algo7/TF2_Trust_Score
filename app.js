@@ -8,6 +8,8 @@ const { steamAPIKey } = require('./creds.json');
 const steamProfileRegEx = /https:\/\/steamcommunity.com\/id\/*/
 // https://steamcommunity.com/id/Dr_Pepper_chemec/
 
+// TF2 Game ID
+const gameId = 440;
 
 /**
  * Get the user name from the user's profile url
@@ -53,7 +55,6 @@ const getSteamId = async (userName) => {
     }
 }
 
-
 /**
  * Get player summaries from the steam id
  * @param {String} steamId - The user's steam id 
@@ -78,7 +79,32 @@ const getPlayerSummaries = async (steamId) => {
     }
 }
 
-const userName = extractUserName('https://steamcommunity.com/id/Dr_Pepper_chemec/')
+/**
+ * Get game stats from the steam id
+ * @param {String} steamId - The user's steam id 
+ * @returns {Promise<Object> | Error} - The user's game stats
+ */
+const getUserGameStats = async (steamId) => {
+    try {
+
+        // The request config
+        const requestConfig = {
+            url: ` http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=${gameId}&key=${steamAPIKey}&steamid=${steamId}`,
+            method: 'GET',
+        }
+
+        // Make the request
+        const { data: { playerstats } } = await axios(requestConfig);
+
+        return playerstats;
+
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const userName = extractUserName('https://steamcommunity.com/id/avivlo0612/')
 getSteamId(userName).then(steamId => {
-    getPlayerSummaries(steamId).then(data => console.log(data));
+    // getPlayerSummaries(steamId).then(data => console.log(data));
+    getUserGameStats(steamId).then(data => console.log(data));
 })
