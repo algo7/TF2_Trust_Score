@@ -186,7 +186,7 @@ const getBans = async (steamId) => {
     try {
         // The request config
         const requestConfig = {
-            url: `http://api.steampowered.com/ISteamUser/GetPlayerBans/v1/?key=${steamAPIKey}`,
+            url: `http://api.steampowered.com/ISteamUser/GetPlayerBans/v0001/?key=${steamAPIKey}`,
             method: 'GET',
             params: {
                 steamids: steamId,
@@ -204,6 +204,33 @@ const getBans = async (steamId) => {
     }
 }
 
+/**
+ *  Get user's friend list
+ * @param {String} steamId - The user's steam id
+ * @returns {Promise<Object> | Error} - The user's friends 
+ */
+const getFriends = async (steamId) => {
+    try {
+        // The request config
+        const requestConfig = {
+            url: `http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=${steamAPIKey}`,
+            method: 'GET',
+            params: {
+                steamid: steamId,
+                relationship: 'friend',
+            }
+        }
+
+        // Make the request
+        const { data: { friendslist: { friends } } } = await axios(requestConfig);
+
+        return friends;
+
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 const userName = extractUserName('https://steamcommunity.com/id/Dr_Pepper_chemec/')
 getSteamId(userName).then(steamId => {
     // console.log(steamId);
@@ -211,5 +238,6 @@ getSteamId(userName).then(steamId => {
     // getUserGameStats(steamId).then(data => console.log(data));
     // getOwnedGames(steamId).then(data => console.log(data));
     // getRecentlyPlayedGames(steamId).then(data => console.log(data));
-    // getBan(steamId).then(data => console.log(data));
+    // getBans(steamId).then(data => console.log(data));
+    // getFriends(steamId).then(data => console.log(data));
 })
