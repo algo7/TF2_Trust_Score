@@ -42,8 +42,11 @@ const getSteamId = async (userName) => {
 
         // The request config
         const requestConfig = {
-            url: `http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${steamAPIKey}&vanityurl=${userName}`,
+            url: `http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${steamAPIKey}`,
             method: 'GET',
+            params: {
+                vanityurl: userName,
+            }
         }
 
         // Make the request
@@ -65,8 +68,11 @@ const getPlayerSummaries = async (steamId) => {
 
         // The request config
         const requestConfig = {
-            url: `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamAPIKey}&steamids=${steamId}`,
+            url: `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamAPIKey}`,
             method: 'GET',
+            params: {
+                steamids: steamId,
+            }
         }
 
         // Make the request
@@ -89,8 +95,12 @@ const getUserGameStats = async (steamId) => {
 
         // The request config
         const requestConfig = {
-            url: ` http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=${gameId}&key=${steamAPIKey}&steamid=${steamId}`,
+            url: ` http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=${gameId}`,
             method: 'GET',
+            params: {
+                key: steamAPIKey,
+                steamid: steamId,
+            }
         }
 
         // Make the request
@@ -141,6 +151,7 @@ const getOwnedGames = async (steamId) => {
 
 const userName = extractUserName('https://steamcommunity.com/id/avivlo0612/')
 getSteamId(userName).then(steamId => {
+    console.log(steamId);
     // getPlayerSummaries(steamId).then(data => console.log(data));
     // getUserGameStats(steamId).then(data => console.log(data));
     // getOwnedGames(steamId).then(data => console.log(data));
