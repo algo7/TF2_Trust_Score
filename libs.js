@@ -134,11 +134,17 @@ const getOwnedGames = async (steamId) => {
                 format: 'json',
                 include_appinfo: 1,
                 include_played_free_games: 1,
+                appids_filter: gameId,
             },
         };
 
         // Make the request
         const { data: { response, }, } = await axios(requestConfig);
+
+        // Check if the response is empty
+        if (Object.keys(response).length === 0) {
+            throw ('No games found');
+        }
 
         const tf2Stats = response.games.filter(game => game.appid === gameId);
 
@@ -174,11 +180,43 @@ const getRecentlyPlayedGames = async (steamId) => {
         // Make the request
         const { data: { response, }, } = await axios(requestConfig);
 
+        // Check if the response is empty
+        if (Object.keys(response).length === 0) {
+            throw ('No games found');
+        }
 
         return response;
 
     } catch (err) {
         throw err;
+    }
+};
+
+/**
+ *  Get user's friend list
+ * @param {String} steamId - The user's steam id
+ * @returns {Promise<Object> | Error} - The user's friends 
+ */
+const getFriends = async (steamId) => {
+    try {
+        // The request config
+        const requestConfig = {
+            url: 'http://api.steampowered.com/ISteamUser/GetFriendList/v1/',
+            method: 'GET',
+            params: {
+                key: steamAPIKey,
+                steamid: steamId,
+                relationship: 'friend',
+            },
+        };
+
+        // Make the request
+        const { data: { friendslist: { friends, }, }, } = await axios(requestConfig);
+
+        return friends;
+
+    } catch (err) {
+        throw err.toJSON();
     }
 };
 
@@ -208,34 +246,6 @@ const getBans = async (steamIds) => {
         const { data: { players, }, } = await axios(requestConfig);
 
         return players;
-
-    } catch (err) {
-        throw err;
-    }
-};
-
-/**
- *  Get user's friend list
- * @param {String} steamId - The user's steam id
- * @returns {Promise<Object> | Error} - The user's friends 
- */
-const getFriends = async (steamId) => {
-    try {
-        // The request config
-        const requestConfig = {
-            url: 'http://api.steampowered.com/ISteamUser/GetFriendList/v1/',
-            method: 'GET',
-            params: {
-                key: steamAPIKey,
-                steamid: steamId,
-                relationship: 'friend',
-            },
-        };
-
-        // Make the request
-        const { data: { friendslist: { friends, }, }, } = await axios(requestConfig);
-
-        return friends;
 
     } catch (err) {
         throw err;
@@ -295,18 +305,27 @@ const getFriendVacBans = async (friendList) => {
 }
 
 
-getSteamId('https://steamcommunity.com/profiles/76561198030958226/')
+getSteamId('https://steamcommunity.com/id/tinybuild/')
     .then(steamId => {
         console.log('steamID:', steamId);
-        // getPlayerSummaries(steamId).then(data => console.log(data));
-        // getOwnedGames(steamId).then(data => console.log(data));
-        // getRecentlyPlayedGames(steamId).then(data => console.log(data));
-        // getBans([steamId]).then(data => console.log(data));
+        // Works regardless of the profile visibility
+        // getPlayerSummaries(steamId).then(data => console.log(data)).catch(err => console.log(err));
+        // getBans([steamId]).then(data => console.log(data)).catch(err => console.log(err));
+
+        // Return "no game found" if the user profile is private
+        // getOwnedGames(steamId).then(data => console.log(data)).catch(err => console.log(err));
+        // getRecentlyPlayedGames(steamId).then(data => console.log(data)).catch(err => console.log(err));
+
+
+        // Throws err if the profile is private
         // getFriends(steamId).then(data => {
-        //     // console.log(data)
-        //     getFriendVacBans(data).then(data => console.log(data));
-        // });
-        // getSteamLevel(steamId).then(data => console.log(data));
+        //     console.log(data)
+        //     // getFriendVacBans(data).then(data => console.log(data));
+        // }).catch(err => console.log(err));
+
+        // Returns undefined if the profile is private
+        // getSteamLevel(steamId).then(data => console.log(data)).catch(err => console.log(err));
+
         // Error-prone
         // getUserGameStats(steamId).then(data => console.log(data));
     }).catch(err => console.log(err));
