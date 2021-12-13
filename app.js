@@ -103,8 +103,45 @@ const getUserGameStats = async (steamId) => {
     }
 }
 
+/**
+ * Get user's owned games count and tf2 game stats
+ * @param {String} steamId - The user's steam id
+ * @returns @returns {Promise<Object> | Error} - The user's owned game and playtime
+ */
+const getOwnedGames = async (steamId) => {
+    try {
+
+        // The request config
+        const requestConfig = {
+            url: `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${steamAPIKey}`,
+            method: 'GET',
+            params: {
+                steamid: steamId,
+                format: 'json',
+                include_appinfo: 1,
+                include_played_free_games: 1,
+            }
+        }
+
+        // Make the request
+        const { data: { response } } = await axios(requestConfig);
+
+        const tf2Stats = response.games.filter(game => game.appid === gameId);
+
+        return {
+            gameCount: response.game_count,
+            tf2Stats: tf2Stats[0],
+        }
+
+
+    } catch (err) {
+        console.log(err.toJSON());
+    }
+}
+
 const userName = extractUserName('https://steamcommunity.com/id/avivlo0612/')
 getSteamId(userName).then(steamId => {
     // getPlayerSummaries(steamId).then(data => console.log(data));
-    getUserGameStats(steamId).then(data => console.log(data));
+    // getUserGameStats(steamId).then(data => console.log(data));
+    // getOwnedGames(steamId).then(data => console.log(data));
 })
