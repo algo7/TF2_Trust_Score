@@ -149,10 +149,39 @@ const getOwnedGames = async (steamId) => {
     }
 }
 
+/**
+ * Get user's recently played games for the past 2 weeks
+ * @param {String} steamId - The user's steam id
+ * @returns {Promise<Object> | Error} - The user's recently played games for the past 2 weeks
+ */
+const getRecentlyPlayedGames = async (steamId) => {
+    try {
+        // The request config
+        const requestConfig = {
+            url: ` http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${steamAPIKey}`,
+            method: 'GET',
+            params: {
+                steamid: steamId,
+                format: 'json',
+            }
+        }
+
+        // Make the request
+        const { data: { response } } = await axios(requestConfig);
+
+
+        return response;
+
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 const userName = extractUserName('https://steamcommunity.com/id/avivlo0612/')
 getSteamId(userName).then(steamId => {
-    console.log(steamId);
+    // console.log(steamId);
     // getPlayerSummaries(steamId).then(data => console.log(data));
     // getUserGameStats(steamId).then(data => console.log(data));
     // getOwnedGames(steamId).then(data => console.log(data));
+    // getRecentlyPlayedGames(steamId).then(data => console.log(data));
 })
