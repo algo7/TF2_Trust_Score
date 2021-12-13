@@ -134,7 +134,6 @@ const getOwnedGames = async (steamId) => {
                 format: 'json',
                 include_appinfo: 1,
                 include_played_free_games: 1,
-                appids_filter: gameId,
             },
         };
 
