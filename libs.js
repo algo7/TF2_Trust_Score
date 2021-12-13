@@ -5,56 +5,57 @@ const { default: axios } = require('axios');
 const { steamAPIKey } = require('./creds.json');
 
 // Steam profile url regex
-const steamProfileRegEx = /https:\/\/steamcommunity.com\/id\/*/
+const steamProfileRegEx = /https:\/\/steamcommunity.com\/id\/.{0,}\/$/
+const steamProfileRegExSteamId = /https:\/\/steamcommunity.com\/profiles\/[0-9]{17}\/$/
 // https://steamcommunity.com/id/Dr_Pepper_chemec/
 
 // TF2 Game ID
 const gameId = 440;
 
 /**
- * Get the user name from the user's profile url
+ * Get the steam id from the user name
  * @param {String} profileUrl - The user's profile url
- * @returns {String} - The user's name
+ * @returns {Promise<String> | Error} - The user's steam id
  */
-const extractUserName = (profileUrl) => {
+const getSteamId = async (profileUrl) => {
     try {
-        // Check if the profile url is valid
-        if (!steamProfileRegEx.test(profileUrl)) {
-            throw ('Invalid profile URL');
-        }
-        // Extract the user name
-        const userName = profileUrl.split('/')[4];
 
-        return userName;
+        // Check if the profile url is valid
+        if (steamProfileRegExSteamId.test(profileUrl)) {
+            // Extract the user name
+            const steamid = profileUrl.split('/')[4];
+
+            return steamid;
+
+        }
+
+        // Check if the profile url is valid
+        if (steamProfileRegEx.test(profileUrl)) {
+
+            // Extract the user name
+            const userName = profileUrl.split('/')[4];
+
+            // The request config
+            const requestConfig = {
+                url: `http://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/`,
+                method: 'GET',
+                params: {
+                    key: steamAPIKey,
+                    vanityurl: userName,
+                }
+            }
+
+            // Make the request
+            const { data: { response: { steamid } } } = await axios(requestConfig);
+
+            return steamid;
+        }
+
+        throw ('Invalid profile URL');
+
 
     } catch (err) {
         console.log(err);
-    }
-}
-
-/**
- * Get the steam id from the user name
- * @param {String} userName - The user name
- * @returns {Promise<String> | Error} - The user's steam id
- */
-const getSteamId = async (userName) => {
-    try {
-
-        // The request config
-        const requestConfig = {
-            url: `http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${steamAPIKey}`,
-            method: 'GET',
-            params: {
-                vanityurl: userName,
-            }
-        }
-
-        // Make the request
-        const { data: { response: { steamid } } } = await axios(requestConfig);
-
-        return steamid;
-    } catch (err) {
-        console.log(err.toJSON());
     }
 }
 
@@ -68,9 +69,10 @@ const getPlayerSummaries = async (steamId) => {
 
         // The request config
         const requestConfig = {
-            url: `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamAPIKey}`,
+            url: `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/`,
             method: 'GET',
             params: {
+                key: steamAPIKey,
                 steamids: steamId,
             }
         }
@@ -95,11 +97,12 @@ const getUserGameStats = async (steamId) => {
 
         // The request config
         const requestConfig = {
-            url: ` http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=${gameId}`,
+            url: ` https://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v2/`,
             method: 'GET',
             params: {
                 key: steamAPIKey,
                 steamid: steamId,
+                appid: gameId,
             }
         }
 
@@ -120,12 +123,12 @@ const getUserGameStats = async (steamId) => {
  */
 const getOwnedGames = async (steamId) => {
     try {
-
         // The request config
         const requestConfig = {
-            url: `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${steamAPIKey}`,
+            url: `http://api.steampowered.com/IPlayerService/GetOwnedGames/v1/`,
             method: 'GET',
             params: {
+                key: steamAPIKey,
                 steamid: steamId,
                 format: 'json',
                 include_appinfo: 1,
@@ -145,7 +148,7 @@ const getOwnedGames = async (steamId) => {
 
 
     } catch (err) {
-        console.log(err.toJSON());
+        console.log(err);
     }
 }
 
@@ -158,9 +161,10 @@ const getRecentlyPlayedGames = async (steamId) => {
     try {
         // The request config
         const requestConfig = {
-            url: ` http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${steamAPIKey}`,
+            url: `http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v1/`,
             method: 'GET',
             params: {
+                key: steamAPIKey,
                 steamid: steamId,
                 format: 'json',
             }
@@ -179,17 +183,22 @@ const getRecentlyPlayedGames = async (steamId) => {
 
 /**
  * Get user's bans info
- * @param {String} steamId - The user's steam id 
+ * @param {Array<String>} steamIds - The user's steam id 
  * @returns {Promise<Object> | Error} - The user's ban info
  */
-const getBans = async (steamId) => {
+const getBans = async (steamIds) => {
     try {
+
+        // Convert an array of steam ids to a comma separated string
+        const steamIdsString = steamIds.join(',');
+
         // The request config
         const requestConfig = {
-            url: `http://api.steampowered.com/ISteamUser/GetPlayerBans/v0001/?key=${steamAPIKey}`,
+            url: `https://api.steampowered.com/ISteamUser/GetPlayerBans/v1/`,
             method: 'GET',
             params: {
-                steamids: steamId,
+                key: steamAPIKey,
+                steamids: steamIdsString,
                 format: 'json',
             }
         }
@@ -213,9 +222,10 @@ const getFriends = async (steamId) => {
     try {
         // The request config
         const requestConfig = {
-            url: `http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=${steamAPIKey}`,
+            url: `http://api.steampowered.com/ISteamUser/GetFriendList/v1/`,
             method: 'GET',
             params: {
+                key: steamAPIKey,
                 steamid: steamId,
                 relationship: 'friend',
             }
@@ -258,14 +268,16 @@ const getSteamLevel = async (steamId) => {
 }
 
 
-const userName = extractUserName('https://steamcommunity.com/id/Dr_Pepper_chemec/')
-getSteamId(userName).then(steamId => {
-    // console.log(steamId);
-    // getPlayerSummaries(steamId).then(data => console.log(data));
-    // getUserGameStats(steamId).then(data => console.log(data));
-    // getOwnedGames(steamId).then(data => console.log(data));
-    // getRecentlyPlayedGames(steamId).then(data => console.log(data));
-    // getBans(steamId).then(data => console.log(data));
-    // getFriends(steamId).then(data => console.log(data));
-    // getSteamLevel(steamId).then(data => console.log(data));
-})
+getSteamId('https://steamcommunity.com/profiles/76561198030958226/')
+    .then(steamId => {
+        console.log('steamID:', steamId);
+        // getPlayerSummaries(steamId).then(data => console.log(data));
+        // getOwnedGames(steamId).then(data => console.log(data));
+        // getRecentlyPlayedGames(steamId).then(data => console.log(data));
+        // getBans([steamId]).then(data => console.log(data));
+        // getFriends(steamId).then(data => console.log(data));
+        // getSteamLevel(steamId).then(data => console.log(data));
+
+        // Error-prone
+        // getUserGameStats(steamId).then(data => console.log(data));
+    }).catch(err => console.log(err));
