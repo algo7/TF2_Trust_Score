@@ -1,0 +1,23 @@
+{
+  "name": "tf2_trust_score",
+  "version": "1.0.0",
+  "description": "TF2 Trust Score System",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/algo7/TF2_Trust_Score.git"
+  },
+  "keywords": [
+    "tf2",
+    "trust"
+  ],
+  "author": "Aviv Lo",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/algo7/TF2_Trust_Score/issues"
+  },
+  "homepage": "https://github.com/algo7/TF2_Trust_Score#readme"
+}
