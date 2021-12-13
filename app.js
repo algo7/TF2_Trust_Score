@@ -177,11 +177,39 @@ const getRecentlyPlayedGames = async (steamId) => {
     }
 }
 
-const userName = extractUserName('https://steamcommunity.com/id/avivlo0612/')
+/**
+ * Get user's bans info
+ * @param {String} steamId - The user's steam id 
+ * @returns {Promise<Object> | Error} - The user's ban info
+ */
+const getBans = async (steamId) => {
+    try {
+        // The request config
+        const requestConfig = {
+            url: `http://api.steampowered.com/ISteamUser/GetPlayerBans/v1/?key=${steamAPIKey}`,
+            method: 'GET',
+            params: {
+                steamids: steamId,
+                format: 'json',
+            }
+        }
+
+        // Make the request
+        const { data: { players } } = await axios(requestConfig);
+
+        return players;
+
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const userName = extractUserName('https://steamcommunity.com/id/Dr_Pepper_chemec/')
 getSteamId(userName).then(steamId => {
     // console.log(steamId);
     // getPlayerSummaries(steamId).then(data => console.log(data));
     // getUserGameStats(steamId).then(data => console.log(data));
     // getOwnedGames(steamId).then(data => console.log(data));
     // getRecentlyPlayedGames(steamId).then(data => console.log(data));
+    // getBan(steamId).then(data => console.log(data));
 })
