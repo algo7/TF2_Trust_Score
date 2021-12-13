@@ -1,2 +1,2 @@
-# TF2_Trust_Score
-TF2 Trust Score System
+# TF2_Trust_Factor
+TF2 Trust Factor System
