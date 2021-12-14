@@ -38,7 +38,7 @@ const computeTrust = asyncHandler(async (req, res) => {
 });
 
 // @desc Get the trust factor of a player via steam id
-// @route GET /trust/:id
+// @route GET /trust/user/:steamId'
 // @access Public
 const computeTrustId = asyncHandler(async (req, res) => {
 
@@ -64,7 +64,7 @@ const computeTrustId = asyncHandler(async (req, res) => {
 
 });
 
-// @desc Get the trust factor of a player via steam id
+// @desc Get the trust factor of a player's friends
 // @route GET /trust/bulk
 // @access Public
 const computTrustBulk = asyncHandler(async (req, res) => {
@@ -73,8 +73,12 @@ const computTrustBulk = asyncHandler(async (req, res) => {
     const { profileUrl, } = req.query;
 
     // Perform bulk analysis
+    const result = await bulkAnalysis(profileUrl);
+
+
+    res.status(200).json(result);
 
 });
 
 
-module.exports = { computeTrust, computeTrustId, };
+module.exports = { computeTrust, computeTrustId, computTrustBulk, };
