@@ -24,6 +24,11 @@
     "apos-to-lex-form": "^1.0.5",
     "axios": "^0.24.0",
     "cheerio": "^1.0.0-rc.10",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.17.1",
+    "express-handlebars": "^6.0.2",
+    "express-suite": "^1.6.3",
     "natural": "^5.1.11"
   },
   "devDependencies": {
