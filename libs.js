@@ -368,7 +368,7 @@ const getComments = async (steamId) => {
 /**
  * Calculate the number of user's friends who have VAC Bans
  * @param {Object} friendList - The user's friend list
- * @returns {Number} - The number of user's friends who have VAC Bans
+ * @returns {Number} - The % of user's friends who have VAC Bans
  */
 const getFriendVacBans = async (friendList) => {
 
@@ -382,7 +382,10 @@ const getFriendVacBans = async (friendList) => {
         // Filter out ids that have VAC Bans
         const banned = bans.filter(ban => ban.VACBanned === true).length;
 
-        return banned;
+        // Calculate the % of friends who have VAC Bans
+        const friendVACBanPercentage = banned / friendList.length;
+
+        return friendVACBanPercentage;
 
     } catch (err) {
         throw err;
@@ -391,7 +394,7 @@ const getFriendVacBans = async (friendList) => {
 };
 
 
-getSteamId('https://steamcommunity.com/profiles/76561199002033552/')
+getSteamId('https://steamcommunity.com/id/avivlo0612/')
     .then(steamId => {
         console.log('steamID:', steamId);
         // Works regardless of the profile visibility
@@ -404,10 +407,10 @@ getSteamId('https://steamcommunity.com/profiles/76561199002033552/')
         // getComments(steamId).then(data => console.log(data)).catch(err => console.log(err));
 
         // Throws err if the profile is private
-        // getFriends(steamId).then(data => {
-        //     console.log(data)
-        //     // getFriendVacBans(data).then(data => console.log(data));
-        // }).catch(err => console.log(err));
+        getFriends(steamId).then(data => {
+            // console.log(data);
+            getFriendVacBans(data).then(data => console.log(data));
+        }).catch(err => console.log(err));
 
         // Returns undefined if the profile is private
         // getSteamLevel(steamId).then(data => console.log(data)).catch(err => console.log(err));
