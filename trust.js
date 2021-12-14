@@ -1,7 +1,7 @@
 /**
  * Compute the trust factor for the given user
  * @param {Object} info - The user's info object
- * @returns {Number} - The user's trust factor
+ * @returns {Promise<Number> | Error} - The user's trust factor
  */
 const trustFactor = (info) => {
     try {
@@ -10,7 +10,7 @@ const trustFactor = (info) => {
         const { timeSinceCreation, profileVsibility, steamLevel,
             gameCount, friendVACBanPercentage, commentSentimentScore,
             totalHours, totalHoursLinux, totalHoursLinuxPercentage,
-            friendCount,
+            friendCount, NumberOfVACBans, VACBanned,
         } = info;
 
         // Private profile
@@ -55,6 +55,22 @@ const trustFactor = (info) => {
             trustFactor -= 5;
         }
 
+        // VAC Bans
+        if (VACBanned) {
+            trustFactor -= 10;
+        }
+
+        if (NumberOfVACBans >= 2) {
+            trustFactor -= 10 * (NumberOfVACBans - 1);
+        }
+
+        // Sentiment
+        if (commentSentimentScore < -1) {
+            trustFactor -= 3;
+        }
+
+
+        return trustFactor;
 
 
     } catch (err) {
@@ -64,3 +80,15 @@ const trustFactor = (info) => {
 
 
 module.exports = { trustFactor, };
+
+// const { trustFactorDataPreprocessing, } = require('./libs');
+
+// const test = async () => {
+//     const data = await trustFactorDataPreprocessing('https://steamcommunity.com/id/MONaH-Rasta/');
+//     console.log(data);
+//     const trustScore = await trustFactor(data);
+
+//     return trustScore;
+// };
+
+// test().then(x => console.log(x)).catch(x => console.log(x));

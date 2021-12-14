@@ -436,6 +436,11 @@ const trustFactorDataPreprocessing = async (profileUrl) => {
         // Get player's steam level
         const steamLevel = await getSteamLevel(steamId);
 
+        // VAC Ban data
+        const bans = await getBans([steamId]);
+
+        const { VACBanned, NumberOfVACBans, } = bans[0];
+
         // Handles private profiles
         if (!profileVsibility) {
 
@@ -443,6 +448,8 @@ const trustFactorDataPreprocessing = async (profileUrl) => {
                 profileVsibility,
                 timeSinceCreation: 0,
                 steamLevel: 0,
+                VACBanned,
+                NumberOfVACBans,
             };
         }
 
@@ -460,7 +467,6 @@ const trustFactorDataPreprocessing = async (profileUrl) => {
         // Get comment's sentiment score
         const commentSentimentScore = await getComments(steamId);
 
-
         return {
             timeSinceCreation,
             profileVsibility,
@@ -468,6 +474,8 @@ const trustFactorDataPreprocessing = async (profileUrl) => {
             gameCount,
             friendVACBanPercentage,
             commentSentimentScore,
+            VACBanned,
+            NumberOfVACBans,
             totalHours: Math.floor(playtime_forever / 60),
             totalHoursLinux: Math.floor(playtime_linux_forever / 60),
             totalHoursLinuxPercentage: playtime_linux_forever / playtime_forever,
@@ -480,7 +488,9 @@ const trustFactorDataPreprocessing = async (profileUrl) => {
 };
 
 module.exports = { trustFactorDataPreprocessing, };
-
+// trustFactorDataPreprocessing('https://steamcommunity.com/id/MyDickHasTheSIzeOfAnAirport/')
+//     .then(data => console.log(data))
+//     .catch(err => console.log(err));
 
 // getSteamId('https://steamcommunity.com/id/avivlo0612/')
 //     .then(steamId => {
@@ -511,7 +521,3 @@ module.exports = { trustFactorDataPreprocessing, };
 
 
 //     }).catch(err => console.log(err));
-
-trustFactorDataPreprocessing('https://steamcommunity.com/id/totalanduttercosmicstuff/')
-    .then(data => console.log(data))
-    .catch(err => console.log(err));
