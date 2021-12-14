@@ -364,6 +364,12 @@ const getComments = async (steamId) => {
 const getFriendVacBansPercentage = async (friendList) => {
 
     try {
+
+        // If the friend list is empty => full penalty
+        if (friendList.length === 0) {
+            return 1;
+        }
+
         // Extract the steam ids from the friend list
         const steamIds = friendList.map(friend => friend.steamid);
 
