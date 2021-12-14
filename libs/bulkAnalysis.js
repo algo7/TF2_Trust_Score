@@ -10,7 +10,7 @@ const { Player_DB, } = require('../config/dbConnection');
  * @param {String} profileUrl - The profile url of the player
  * @returns {Promise<Object> | Erro}
  */
-const recursiveAnalaysis = async (profileUrl) => {
+const bulkAnalaysis = async (profileUrl) => {
     try {
 
         // Get the steam id of the player
@@ -58,4 +58,4 @@ const recursiveAnalaysis = async (profileUrl) => {
 
 };
 
-module.exports = recursiveAnalaysis;
+module.exports = bulkAnalaysis;

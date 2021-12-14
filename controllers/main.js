@@ -2,6 +2,7 @@
 const asyncHandler = require('../libs/asyncHandler');
 const { trustFactor, } = require('../libs/trust');
 const { trustFactorDataPreprocessing, getSteamId, } = require('../libs/apiCalls');
+const bulkAnalysis = require('../libs/bulkAnalysis');
 
 // DB
 const { Player_DB, } = require('../config/dbConnection');
@@ -71,13 +72,9 @@ const computTrustBulk = asyncHandler(async (req, res) => {
     // Get the profile url
     const { profileUrl, } = req.query;
 
+    // Perform bulk analysis
 
 });
 
 
 module.exports = { computeTrust, computeTrustId, };
-
-
-const recursiveAnalysis = require('../libs/recursiveAnalysis');
-
-recursiveAnalysis('https://steamcommunity.com/id/avivlo0612/').catch(err => console.log(err));
