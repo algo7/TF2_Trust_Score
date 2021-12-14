@@ -10,7 +10,7 @@ const { Player_DB, } = require('../config/dbConnection');
 // @route POST /trust
 // @access Public
 const computeTrust = asyncHandler(async (req, res, next) => {
-
+  
     const { profileUrl, } = req.body;
 
     const processedData = await trustFactorDataPreprocessing(profileUrl);
@@ -18,7 +18,9 @@ const computeTrust = asyncHandler(async (req, res, next) => {
 
     processedData.trustFactor = trustFactorValue;
 
-    res.status(200).json(processedData);
+    const result = await Player_DB.create(processedData);
+
+    res.status(200).json(result);
 });
 
 module.exports = { computeTrust, };

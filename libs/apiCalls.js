@@ -506,7 +506,7 @@ module.exports = { trustFactorDataPreprocessing, };
 //     .then(data => console.log(data))
 //     .catch(err => console.log(err));
 
-// getSteamId('https://steamcommunity.com/id/avivlo0612/')
+// getSteamId('                        ')
 //     .then(steamId => {
 //         console.log('steamID:', steamId);
 //         // Works regardless of the profile visibility

@@ -29,6 +29,7 @@
     "express": "^4.17.1",
     "express-handlebars": "^6.0.2",
     "express-suite": "^1.6.3",
+    "mongoose": "^6.1.1",
     "natural": "^5.1.11"
   },
   "devDependencies": {

@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 // DB URI
-const Mongo_Local_URI = 'mongodb://localhost:27017/ECHO';
+const Mongo_Local_URI = 'mongodb://localhost:27017/TF2';
 
 // // Creds
 // const { mongoURI, } = require('../../libs/credLoader');
