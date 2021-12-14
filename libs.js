@@ -510,7 +510,7 @@ getSteamId('https://steamcommunity.com/id/avivlo0612/')
 
     }).catch(err => console.log(err));
 
-trustFactorDataPreprocessing('https://steamcommunity.com/profiles/76561198962426691/')
+trustFactorDataPreprocessing('https://steamcommunity.com/id/heinrichderpro/')
     .then(data => console.log(data))
     .catch(err => console.log(err));
 
