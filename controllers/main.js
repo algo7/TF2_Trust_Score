@@ -1,3 +1,6 @@
+// Custom Modules
+const asyncHandler = require('../libs/asyncHandler');
+
 // @desc Allow the admin to get all the reported conversations
 // @route DELETE /admin/interest/delete
 // @access Private

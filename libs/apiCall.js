@@ -7,7 +7,7 @@ const tokenizer = new WordTokenizer;
 const cheerio = require('cheerio');
 
 // Creds
-const { steamAPIKey, } = require('./creds.json');
+const { steamAPIKey, } = require('../creds.json');
 
 // Steam profile url regex
 const steamProfileRegEx = /https:\/\/steamcommunity.com\/id\/.{0,}\/$/;
