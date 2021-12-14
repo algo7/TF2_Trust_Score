@@ -4,7 +4,7 @@ const { Schema, } = require('mongoose');
 // Create User Schema
 const PlayerSchema = new Schema({
     // Fields that will alwaus ne present
-    trustScore: {
+    trustFactor: {
         type: Number,
         required: true,
     },
@@ -145,33 +145,3 @@ PlayerSchema.post('save', (error, doc, next) => {
 module.exports = { PlayerSchema, };
 
 // Validation Doc: https://mongoosejs.com/docs/validation.html
-
-const a = {
-    timeSinceCreation: 4244,
-    profileVsibility: true,
-    steamLevel: 13,
-    gameCount: 0,
-    friendVACBanPercentage: 0.14893617021276595,
-    commentSentimentScore: -0.00684931506849315,
-    VACBanned: true,
-    NumberOfVACBans: 1,
-    totalHours: 0,
-    totalHoursLinux: 0,
-    totalHoursLinuxPercentage: NaN,
-    friendCount: 47,
-    playerSummary: {
-        steamid: '76561198024593212',
-        communityvisibilitystate: 3,
-        profilestate: 1,
-        personaname: 'Wham-Bam-Thank-You-Man',
-        profileurl: 'https://steamcommunity.com/profiles/76561198024593212/',
-        avatar: 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/f6/f60e111ef0854dc52648b6fa729e4b904be129ba.jpg',
-        avatarmedium: 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/f6/f60e111ef0854dc52648b6fa729e4b904be129ba_medium.jpg',
-        avatarfull: 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/f6/f60e111ef0854dc52648b6fa729e4b904be129ba_full.jpg',
-        avatarhash: 'f60e111ef0854dc52648b6fa729e4b904be129ba',
-        personastate: 0,
-        primaryclanid: '103582791441227082',
-        timecreated: 1272842949,
-        personastateflags: 0,
-    },
-};
