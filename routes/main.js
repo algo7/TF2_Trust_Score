@@ -6,7 +6,7 @@ const router = express.Router();
 const { computeTrust, } = require('../controllers/main');
 
 // Get all the db contents
-router.post('/trust', computeTrust);
+router.get('/trust', computeTrust);
 
 
 // Export the Module
