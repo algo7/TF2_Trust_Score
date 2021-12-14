@@ -436,15 +436,29 @@ const trustFactorDataPreprocessing = async (profileUrl) => {
         // Get player's steam level
         const steamLevel = await getSteamLevel(steamId);
 
+        // Handles private profiles
+        if (!profileVsibility) {
+
+            return {
+                profileVsibility,
+                timeSinceCreation: 0,
+                steamLevel: 0,
+            };
+        }
+
         // Get tf2 play time
         const { gameCount, tf2Stats: { playtime_forever,
             playtime_linux_forever, }, } = await getOwnedGames(steamId);
+
 
         // Get friends
         const friendList = await getFriends(steamId);
 
         // Friend list with VAC Bans %
         const friendVACBanPercentage = await getFriendVacBansPercentage(friendList);
+
+        // Get comment's sentiment score
+        const commentSentimentScore = await getComments(steamId);
 
 
         return {
@@ -453,6 +467,7 @@ const trustFactorDataPreprocessing = async (profileUrl) => {
             steamLevel,
             gameCount,
             friendVACBanPercentage,
+            commentSentimentScore,
             totalHours: playtime_forever / 60,
             totalHoursLinux: Math.floor(playtime_linux_forever / 60),
             totalHoursLinuxPercentage: playtime_linux_forever / playtime_forever,
@@ -495,7 +510,7 @@ getSteamId('https://steamcommunity.com/id/avivlo0612/')
 
     }).catch(err => console.log(err));
 
-trustFactorDataPreprocessing('https://steamcommunity.com/id/avivlo0612/')
+trustFactorDataPreprocessing('https://steamcommunity.com/profiles/76561198962426691/')
     .then(data => console.log(data))
     .catch(err => console.log(err));
 
