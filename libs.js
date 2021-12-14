@@ -1,5 +1,10 @@
 // Dependencies
 const { default: axios, } = require('axios');
+const standardLex = require('apos-to-lex-form');
+const { WordTokenizer, SentimentAnalyzer, PorterStemmer, } = require('natural');
+const analyzer = new SentimentAnalyzer('English', PorterStemmer, 'afinn');
+const tokenizer = new WordTokenizer;
+const cheerio = require('cheerio');
 
 // Creds
 const { steamAPIKey, } = require('./creds.json');
@@ -11,6 +16,38 @@ const steamProfileRegExSteamId = /https:\/\/steamcommunity.com\/profiles\/[0-9]{
 
 // TF2 Game ID
 const gameId = 440;
+
+// Utility Functions
+
+/**
+ * Pre-process the text for sentiment analysis
+ * @param {String} text - The text to be processed
+ * @returns {Array<String> | Error} - The processed text
+ */
+const dataPrep = (text) => {
+    try {
+
+        // Convert all to lower case
+        const toLow = text.toLowerCase();
+
+        // Normalize (remove accent)
+        const normalized = toLow.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+        // Convert string to standard lexicons
+        const toLex = standardLex(normalized);
+
+        // Remove numbers and punctuations
+        const alphaOnly = toLex.replace(/[^a-zA-Z\s]+/g, '');
+
+        // Tokenize strings
+        const tokenized = tokenizer.tokenize(alphaOnly);
+
+        return tokenized;
+
+    } catch (err) {
+        throw err;
+    }
+};
 
 // Primary Functions
 /**
@@ -27,7 +64,6 @@ const getSteamId = async (profileUrl) => {
             const steamid = profileUrl.split('/')[4];
 
             return steamid;
-
         }
 
         // Check if the profile url is valid
@@ -277,6 +313,54 @@ const getSteamLevel = async (steamId) => {
     }
 };
 
+/**
+ * Get the sentiment score of the user's comments
+ * @param {String} steamId - The user's steam id
+ * @returns {Number | Error} - The user's comments sentiment score
+ */
+const getComments = async (steamId) => {
+    try {
+        // The request config
+        const requestConfig = {
+            url: `http://steamcommunity.com/comment/Profile/render/${steamId}/-1/`,
+            method: 'GET',
+            params: {
+                start: 0,
+                totalcount: 1000,
+                count: 1000,
+            },
+        };
+
+        // Make the request
+        const { data: { success, comments_html, error: reason, }, } = await axios(requestConfig);
+
+        // If it is a private profile
+        if (!success) {
+            throw reason;
+        }
+
+        // Load comments html into cheerio
+        const $ = cheerio.load(comments_html);
+
+        // Extract the comment divs
+        const comments = $('div[class="commentthread_comment_text"]');
+
+        // Extract the comments
+        const pasrsedComments = comments.map((_, element) => $(element).text()).get().join('');
+
+        // Process the comments
+        const processedData = dataPrep(pasrsedComments);
+
+        // Perform sentiment analysis on the comments
+        const analysis = analyzer.getSentiment(processedData);
+
+        return analysis;
+
+    } catch (err) {
+        throw err;
+    }
+};
+
 // Composite Functions
 /**
  * Calculate the number of user's friends who have VAC Bans
@@ -295,13 +379,13 @@ const getFriendVacBans = async (friendList) => {
         // Filter out ids that have VAC Bans
         const banned = bans.filter(ban => ban.VACBanned === true).length;
 
-        return banned
+        return banned;
 
     } catch (err) {
         throw err;
     }
 
-}
+};
 
 
 getSteamId('https://steamcommunity.com/id/tinybuild/')
@@ -311,10 +395,10 @@ getSteamId('https://steamcommunity.com/id/tinybuild/')
         // getPlayerSummaries(steamId).then(data => console.log(data)).catch(err => console.log(err));
         // getBans([steamId]).then(data => console.log(data)).catch(err => console.log(err));
 
-        // Return "no game found" if the user profile is private
+        // Return "TEXT_HERE" if the user profile is private
         // getOwnedGames(steamId).then(data => console.log(data)).catch(err => console.log(err));
         // getRecentlyPlayedGames(steamId).then(data => console.log(data)).catch(err => console.log(err));
-
+        // getComments(steamId).then(data => console.log(data)).catch(err => console.log(err));
 
         // Throws err if the profile is private
         // getFriends(steamId).then(data => {
@@ -327,6 +411,8 @@ getSteamId('https://steamcommunity.com/id/tinybuild/')
 
         // Error-prone
         // getUserGameStats(steamId).then(data => console.log(data));
+
+
     }).catch(err => console.log(err));
 
 
