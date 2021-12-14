@@ -5,6 +5,20 @@
  */
 const trustFactor = (info) => {
     try {
+
+        const { timeSinceCreation, profileVsibility, steamLevel,
+            gameCount, friendVACBanPercentage, commentSentimentScore,
+            totalHours, totalHoursLinux, totalHoursLinuxPercentage,
+            friendCount,
+        } = info;
+
+        // Private profile
+        if (!profileVsibility) {
+            return 0;
+        }
+
+
+
         // const a = {
         //     timeSinceCreation: 1709,
         //     profileVsibility: true,
