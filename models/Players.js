@@ -3,10 +3,7 @@ const { Schema, } = require('mongoose');
 
 // Create User Schema
 const PlayerSchema = new Schema({
-    // Minimum Fields to Have
-    timeSinceCreation: {
-        type: Number,
-    },
+    // Fields that will alwaus ne present
     profileVsibility: {
         type: Boolean,
         required: true,
@@ -24,6 +21,9 @@ const PlayerSchema = new Schema({
         required: true,
     },
     // Optional Fields
+    timeSinceCreation: {
+        type: Number,
+    },
     gameCount: {
         type: Number,
     },
@@ -46,6 +46,7 @@ const PlayerSchema = new Schema({
         type: Number,
     },
     playerSummary: {
+        // Fields that will always be present
         steamid: {
             type: String,
             required: true,
@@ -86,15 +87,13 @@ const PlayerSchema = new Schema({
             type: Number,
             required: true,
         },
+        // Optional Fields
         lastlogoff: {
             type: Number,
-            required: true,
         },
         commentpermission: {
             type: Number,
-            required: true,
         },
-        // Optional Fields
         timecreated: {
             type: Number,
         },
@@ -103,6 +102,9 @@ const PlayerSchema = new Schema({
         },
         realname: {
             type: String,
+        },
+        personastateflags: {
+            type: Number,
         },
         loccountrycode: {
             type: String,
