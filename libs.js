@@ -468,7 +468,7 @@ const trustFactorDataPreprocessing = async (profileUrl) => {
             gameCount,
             friendVACBanPercentage,
             commentSentimentScore,
-            totalHours: playtime_forever / 60,
+            totalHours: Math.floor(playtime_forever / 60),
             totalHoursLinux: Math.floor(playtime_linux_forever / 60),
             totalHoursLinuxPercentage: playtime_linux_forever / playtime_forever,
             friendCount: friendList.length,
@@ -512,6 +512,6 @@ module.exports = { trustFactorDataPreprocessing, };
 
 //     }).catch(err => console.log(err));
 
-// trustFactorDataPreprocessing('https://steamcommunity.com/profiles/76561198962558280/')
-//     .then(data => console.log(data))
-//     .catch(err => console.log(err));
+trustFactorDataPreprocessing('https://steamcommunity.com/id/totalanduttercosmicstuff/')
+    .then(data => console.log(data))
+    .catch(err => console.log(err));

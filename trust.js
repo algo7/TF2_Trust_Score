@@ -6,6 +6,7 @@
 const trustFactor = (info) => {
     try {
 
+        let trustFactor = 100;
         const { timeSinceCreation, profileVsibility, steamLevel,
             gameCount, friendVACBanPercentage, commentSentimentScore,
             totalHours, totalHoursLinux, totalHoursLinuxPercentage,
@@ -17,26 +18,49 @@ const trustFactor = (info) => {
             return 0;
         }
 
+        // New Player
+        if (steamLevel < 5 && totalHours < 500) {
+            trustFactor -= 5;
+        }
+
+        if (steamLevel < 5 && gameCount <= 2) {
+            trustFactor -= 5;
+        }
+
+        // Friend count
+        if (friendCount === 0 || friendCount <= 10) {
+            trustFactor -= 5;
+        }
+
+        // VAC banned friends
+        if (friendVACBanPercentage > 0) {
+            trustFactor -= 5;
+        }
+
+        if (friendVACBanPercentage > 0.06) {
+            trustFactor -= 5;
+        }
+
+        // Account age
+        if (timeSinceCreation < 365) {
+            trustFactor -= 5;
+        }
+
+        // Linux
+        if (totalHoursLinux) {
+            trustFactor -= 5;
+        }
+
+        if (totalHoursLinuxPercentage > 0.1) {
+            trustFactor -= 5;
+        }
 
 
-        // const a = {
-        //     timeSinceCreation: 1709,
-        //     profileVsibility: true,
-        //     steamLevel: 10,
-        //     gameCount: 15,
-        //     friendVACBanPercentage: 0.08771929824561403,
-        //     commentSentimentScore: 0.05328269126424308,
-        //     totalHours: 4447.266666666666,
-        //     totalHoursLinux: 41,
-        //     totalHoursLinuxPercentage: 0.009436507817535864,
-        //     friendCount: 285,
-        // };
 
-        // { profileVsibility: false, timeSinceCreation: 0, steamLevel: 0 }
-        console.log(info);
     } catch (err) {
         throw err;
     }
 };
+
 
 module.exports = { trustFactor, };
