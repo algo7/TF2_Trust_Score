@@ -4,6 +4,11 @@ const { Schema, } = require('mongoose');
 // Create User Schema
 const PlayerSchema = new Schema({
     // Fields that will alwaus ne present
+    steamid: {
+        type: String,
+        required: true,
+        unique: true,
+    },
     trustFactor: {
         type: Number,
         required: true,

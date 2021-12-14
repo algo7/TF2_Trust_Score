@@ -1,7 +1,7 @@
 // Custom Modules
 const asyncHandler = require('../libs/asyncHandler');
 const { trustFactor, } = require('../libs/trust');
-const { trustFactorDataPreprocessing, } = require('../libs/apiCalls');
+const { trustFactorDataPreprocessing, getSteamId, } = require('../libs/apiCalls');
 
 // DB
 const { Player_DB, } = require('../config/dbConnection');
@@ -10,14 +10,23 @@ const { Player_DB, } = require('../config/dbConnection');
 // @route POST /trust
 // @access Public
 const computeTrust = asyncHandler(async (req, res, next) => {
-  
+
+    // Get the profile url
     const { profileUrl, } = req.body;
 
-    const processedData = await trustFactorDataPreprocessing(profileUrl);
+    // Get steam id of the user from the profile url
+    const steamId = await getSteamId(profileUrl);
+
+    // Preprocess the data
+    const processedData = await trustFactorDataPreprocessing(steamId);
+
+    // Calculate the trust factor
     const trustFactorValue = await trustFactor(processedData);
 
+    // Add trust factor to the processed data
     processedData.trustFactor = trustFactorValue;
 
+    // Save to the database
     const result = await Player_DB.create(processedData);
 
     res.status(200).json(result);

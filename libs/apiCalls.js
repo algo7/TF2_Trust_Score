@@ -416,19 +416,16 @@ const getFriendVacBansPercentage = async (friendList) => {
 
 /**
  * Gather information required for computing the trust factor
- * @param {String} profileUrl - The user's profile url
+ * @param {String} steamId - The user's steam id
  * @returns {Promise<Object> | Error} - The processed user's data
  */
-const trustFactorDataPreprocessing = async (profileUrl) => {
+const trustFactorDataPreprocessing = async (steamId) => {
     try {
-
-        // Get steam id of the user from the profile url
-        const steamId = await getSteamId(profileUrl);
 
         // Extract the profile visibility and the profile time of creation from the player summaries
         const playerSummary = await getPlayerSummaries(steamId);
 
-        const { communityvisibilitystate, timecreated, } = playerSummary;
+        const { steamid, communityvisibilitystate, timecreated, } = playerSummary;
 
         // User profile visibility
         let profileVsibility = null;
@@ -457,6 +454,7 @@ const trustFactorDataPreprocessing = async (profileUrl) => {
         if (!profileVsibility) {
 
             return {
+                steamid,
                 profileVsibility,
                 timeSinceCreation: 0,
                 steamLevel: 0,
@@ -481,6 +479,7 @@ const trustFactorDataPreprocessing = async (profileUrl) => {
         const commentSentimentScore = await getComments(steamId);
 
         return {
+            steamid,
             timeSinceCreation,
             profileVsibility,
             steamLevel,
@@ -501,7 +500,7 @@ const trustFactorDataPreprocessing = async (profileUrl) => {
     }
 };
 
-module.exports = { trustFactorDataPreprocessing, };
+module.exports = { trustFactorDataPreprocessing, getSteamId, };
 // trustFactorDataPreprocessing('https://steamcommunity.com/id/MyDickHasTheSIzeOfAnAirport/')
 //     .then(data => console.log(data))
 //     .catch(err => console.log(err));
