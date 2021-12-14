@@ -116,6 +116,10 @@ const getPlayerSummaries = async (steamId) => {
         // Make the request
         const { data: { response: { players, }, }, } = await axios(requestConfig);
 
+        if (players.length === 0) {
+            throw ('No player found.');
+        }
+
         return players;
 
     } catch (err) {
@@ -387,7 +391,7 @@ const getFriendVacBans = async (friendList) => {
 };
 
 
-getSteamId('https://steamcommunity.com/id/tinybuild/')
+getSteamId('https://steamcommunity.com/profiles/76561199002033552/')
     .then(steamId => {
         console.log('steamID:', steamId);
         // Works regardless of the profile visibility
