@@ -330,7 +330,7 @@ const getSteamLevel = async (steamId) => {
 /**
  * Get the sentiment score of the user's comments
  * @param {String} steamId - The user's steam id
- * @returns {Number | Error} - The user's comments sentiment score
+ * @returns {Promise<Number >| Error} - The user's comments sentiment score
  */
 const getComments = async (steamId) => {
     try {
@@ -379,9 +379,9 @@ const getComments = async (steamId) => {
 /**
  * Calculate the number of user's friends who have VAC Bans
  * @param {Object} friendList - The user's friend list
- * @returns {Number} - The % of user's friends who have VAC Bans
+ * @returns {Promise<Number> | Error} - The % of user's friends who have VAC Bans
  */
-const getFriendVacBans = async (friendList) => {
+const getFriendVacBansPercentage = async (friendList) => {
 
     try {
         // Extract the steam ids from the friend list
@@ -404,6 +404,11 @@ const getFriendVacBans = async (friendList) => {
 
 };
 
+/**
+ * Gather information required for computing the trust factor
+ * @param {String} profileUrl - The user's profile url
+ * @returns {Promise<Object> | Error} - The processed user's data
+ */
 const trustFactorDataPreprocessing = async (profileUrl) => {
     try {
 
@@ -435,6 +440,11 @@ const trustFactorDataPreprocessing = async (profileUrl) => {
         const { gameCount, tf2Stats: { playtime_forever,
             playtime_linux_forever, }, } = await getOwnedGames(steamId);
 
+        // Get friends
+        const friendList = await getFriends(steamId);
+
+        // Friend list with VAC Bans %
+        const friendVACBanPercentage = await getFriendVacBansPercentage(friendList);
 
 
         return {
@@ -442,9 +452,11 @@ const trustFactorDataPreprocessing = async (profileUrl) => {
             profileVsibility,
             steamLevel,
             gameCount,
+            friendVACBanPercentage,
             totalHours: playtime_forever / 60,
             totalHoursLinux: Math.floor(playtime_linux_forever / 60),
             totalHoursLinuxPercentage: playtime_linux_forever / playtime_forever,
+            friendCount: friendList.length,
         };
 
     } catch (err) {
