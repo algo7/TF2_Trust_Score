@@ -345,6 +345,11 @@ const getComments = async (steamId) => {
         // Process the comments
         const processedData = dataPrep(pasrsedComments);
 
+        // If there is text-based comments => full penalty
+        if (processedData.length === 0) {
+            return -1;
+        }
+
         // Perform sentiment analysis on the comments
         const analysis = analyzer.getSentiment(processedData);
 

@@ -77,7 +77,7 @@ const trustFactor = (info) => {
         }
 
         // Sentiment
-        if (commentSentimentScore < -1) {
+        if (commentSentimentScore <= -1) {
             trustFactor -= 3;
         }
 
