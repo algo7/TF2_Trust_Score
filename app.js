@@ -39,6 +39,14 @@ app.use(cookieParser());
 /**
  * All routes go here
  */
+
+// Load Routes
+const Main = require('./routes/main');
+
+// Use Routes
+app.use('/', Main);
+
+
 // Route Check
 app.use(routeCheck(app));
 
