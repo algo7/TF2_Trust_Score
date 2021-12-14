@@ -4,6 +4,10 @@ const { Schema, } = require('mongoose');
 // Create User Schema
 const PlayerSchema = new Schema({
     // Fields that will alwaus ne present
+    trustScore: {
+        type: Number,
+        required: true,
+    },
     profileVsibility: {
         type: Boolean,
         required: true,
