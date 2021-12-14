@@ -462,6 +462,7 @@ const trustFactorDataPreprocessing = async (profileUrl) => {
                 steamLevel: 0,
                 VACBanned,
                 NumberOfVACBans,
+                playerSummary,
             };
         }
 

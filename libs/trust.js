@@ -93,14 +93,14 @@ const trustFactor = (info) => {
 
 module.exports = { trustFactor, };
 
-// const { trustFactorDataPreprocessing, } = require('./apiCalls');
+const { trustFactorDataPreprocessing, } = require('./apiCalls');
 
-// const test = async () => {
-//     const data = await trustFactorDataPreprocessing('https://steamcommunity.com/profiles/76561198024593212/');
+const test = async () => {
+    const data = await trustFactorDataPreprocessing('https://steamcommunity.com/id/tinybuild/');
+    console.log(data);
+    const trustScore = await trustFactor(data);
 
-//     const trustScore = await trustFactor(data);
+    return trustScore;
+};
 
-//     return trustScore;
-// };
-
-// test().then(x => console.log(x)).catch(x => console.log(x));
+test().then(x => console.log(x)).catch(x => console.log(x));
