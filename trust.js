@@ -23,6 +23,10 @@ const trustFactor = (info) => {
             trustFactor -= 5;
         }
 
+        if (totalHours < 1000) {
+            trustFactor -= 20;
+        }
+
         if (steamLevel < 5 && gameCount <= 2) {
             trustFactor -= 5;
         }
@@ -30,6 +34,10 @@ const trustFactor = (info) => {
         // Friend count
         if (friendCount === 0 || friendCount <= 10) {
             trustFactor -= 5;
+        }
+
+        if (!friendVACBanPercentage) {
+            trustFactor -= 10;
         }
 
         // VAC banned friends
@@ -81,14 +89,14 @@ const trustFactor = (info) => {
 
 module.exports = { trustFactor, };
 
-// const { trustFactorDataPreprocessing, } = require('./libs');
+const { trustFactorDataPreprocessing, } = require('./libs');
 
-// const test = async () => {
-//     const data = await trustFactorDataPreprocessing('https://steamcommunity.com/id/MONaH-Rasta/');
-//     console.log(data);
-//     const trustScore = await trustFactor(data);
+const test = async () => {
+    const data = await trustFactorDataPreprocessing('https://steamcommunity.com/id/poisongloom/');
+    console.log(data);
+    const trustScore = await trustFactor(data);
 
-//     return trustScore;
-// };
+    return trustScore;
+};
 
-// test().then(x => console.log(x)).catch(x => console.log(x));
+test().then(x => console.log(x)).catch(x => console.log(x));

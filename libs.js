@@ -265,7 +265,11 @@ const getFriends = async (steamId) => {
         return friends;
 
     } catch (err) {
-        throw err.toJSON();
+
+        if (err.toJSON().status === 401) {
+            return [];
+        }
+        throw err.toJSON().status;
     }
 };
 
