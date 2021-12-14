@@ -242,10 +242,12 @@ const getFriends = async (steamId) => {
 
     } catch (err) {
 
+        // If the user has no friends / or the friends list is private
         if (err.toJSON().status === 401) {
             return [];
         }
-        throw err.toJSON().status;
+
+        throw err;
     }
 };
 
@@ -472,7 +474,8 @@ const trustFactorDataPreprocessing = async (steamId) => {
             NumberOfVACBans,
             totalHours: Math.floor(playtime_forever / 60),
             totalHoursLinux: Math.floor(playtime_linux_forever / 60),
-            totalHoursLinuxPercentage: playtime_linux_forever / playtime_forever,
+            // Account for 0 hour played on tf2
+            totalHoursLinuxPercentage: playtime_linux_forever / playtime_forever || 0,
             friendCount: friendList.length,
             playerSummary,
         };
