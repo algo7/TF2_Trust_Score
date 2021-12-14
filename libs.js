@@ -47,6 +47,17 @@ const dataPrep = (text) => {
         throw err;
     }
 };
+/**
+ * @param {Number} date - The date to be converted
+ * @returns {Number} - The converted date
+ */
+const convertToDate = (date) => {
+    try {
+        return new Date(date * 1000);
+    } catch (err) {
+        throw err;
+    }
+};
 
 // Primary Functions
 /**
@@ -120,7 +131,7 @@ const getPlayerSummaries = async (steamId) => {
             throw ('No player found.');
         }
 
-        return players;
+        return players[0];
 
     } catch (err) {
         throw err;
@@ -393,12 +404,23 @@ const getFriendVacBans = async (friendList) => {
 
 };
 
+const trustFactorDataPreprocessing = () => {
+    try {
+
+    } catch (err) {
+        throw err;
+    }
+};
+
 
 getSteamId('https://steamcommunity.com/id/avivlo0612/')
     .then(steamId => {
         console.log('steamID:', steamId);
         // Works regardless of the profile visibility
-        // getPlayerSummaries(steamId).then(data => console.log(data)).catch(err => console.log(err));
+        getPlayerSummaries(steamId).then(data => {
+            console.log(data);
+
+        }).catch(err => console.log(err));
         // getBans([steamId]).then(data => console.log(data)).catch(err => console.log(err));
 
         // Return "TEXT_HERE" if the user profile is private
@@ -407,10 +429,10 @@ getSteamId('https://steamcommunity.com/id/avivlo0612/')
         // getComments(steamId).then(data => console.log(data)).catch(err => console.log(err));
 
         // Throws err if the profile is private
-        getFriends(steamId).then(data => {
-            // console.log(data);
-            getFriendVacBans(data).then(data => console.log(data));
-        }).catch(err => console.log(err));
+        // getFriends(steamId).then(data => {
+        //     // console.log(data);
+        //     getFriendVacBans(data).then(data => console.log(data));
+        // }).catch(err => console.log(err));
 
         // Returns undefined if the profile is private
         // getSteamLevel(steamId).then(data => console.log(data)).catch(err => console.log(err));
