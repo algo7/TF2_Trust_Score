@@ -1,17 +1,24 @@
 // Custom Modules
 const asyncHandler = require('../libs/asyncHandler');
+const { trustFactor, } = require('../libs/trust');
+const { trustFactorDataPreprocessing, } = require('../libs/apiCalls');
 
-// @desc Allow the admin to get all the reported conversations
-// @route DELETE /admin/interest/delete
-// @access Private
-const adminDeletePassion = asyncHandler(async (req, res, next) => {
+// DB
+const { Player_DB, } = require('../config/dbConnection');
 
-    res.status(200).json({ msg: 'ok', });
+// @desc Get the trust factor of a player
+// @route POST /trust
+// @access Public
+const computeTrust = asyncHandler(async (req, res, next) => {
 
-    if (!1) {
-        return next('x');
-    }
+    const { profileUrl, } = req.body;
 
+    const processedData = await trustFactorDataPreprocessing(profileUrl);
+    const trustFactorValue = await trustFactor(processedData);
+
+    processedData.trustFactor = trustFactorValue;
+
+    res.status(200).json(processedData);
 });
 
-module.exports = adminDeletePassion;
+module.exports = { computeTrust, };
