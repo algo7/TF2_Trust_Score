@@ -376,7 +376,7 @@ const getFriendVacBansPercentage = async (friendList) => {
         if (friendList.length === 0) {
             return 1;
         }
-    
+
         // Extract the steam ids from the friend list
         const steamIds = friendList.map(friend => friend.steamid);
 
