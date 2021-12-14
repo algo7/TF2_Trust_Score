@@ -1,63 +1,26 @@
 // Dependencies
 const { default: axios, } = require('axios');
-const standardLex = require('apos-to-lex-form');
-const { WordTokenizer, SentimentAnalyzer, PorterStemmer, } = require('natural');
+const { SentimentAnalyzer, PorterStemmer, } = require('natural');
 const analyzer = new SentimentAnalyzer('English', PorterStemmer, 'afinn');
-const tokenizer = new WordTokenizer;
 const cheerio = require('cheerio');
+
+// Custom Modules
+const { dataPrep, convertToDate, } = require('./utils');
 
 // Creds
 const { steamAPIKey, } = require('../creds.json');
 
+// Custom Error Class
+const errorResponse = require('./customErrorClass');
+
 // Steam profile url regex
 const steamProfileRegEx = /https:\/\/steamcommunity.com\/id\/.{0,}\/$/;
 const steamProfileRegExSteamId = /https:\/\/steamcommunity.com\/profiles\/[0-9]{17}\/$/;
-// https://steamcommunity.com/id/Dr_Pepper_chemec/
+
 
 // TF2 Game ID
 const gameId = 440;
 
-// Utility Functions
-/**
- * Pre-process the text for sentiment analysis
- * @param {String} text - The text to be processed
- * @returns {Array<String> | Error} - The processed text
- */
-const dataPrep = (text) => {
-    try {
-
-        // Convert all to lower case
-        const toLow = text.toLowerCase();
-
-        // Normalize (remove accent)
-        const normalized = toLow.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-
-        // Convert string to standard lexicons
-        const toLex = standardLex(normalized);
-
-        // Remove numbers and punctuations
-        const alphaOnly = toLex.replace(/[^a-zA-Z\s]+/g, '');
-
-        // Tokenize strings
-        const tokenized = tokenizer.tokenize(alphaOnly);
-
-        return tokenized;
-
-    } catch (err) {
-        throw err;
-    }
-};
-/**
- * @param {Number} date - The date to be converted
- * @returns {Number} - The converted date
- */
-const convertToDate = (date) => {
-    try {
-        return new Date(date * 1000);
-    } catch (err) {
-        throw err;
-    }
-};
 
 // Primary Functions
 /**
@@ -98,7 +61,7 @@ const getSteamId = async (profileUrl) => {
             return steamid;
         }
 
-        throw ('Invalid profile URL');
+        throw new errorResponse('Invalid profile URL', 400, false);
 
 
     } catch (err) {
@@ -128,7 +91,7 @@ const getPlayerSummaries = async (steamId) => {
         const { data: { response: { players, }, }, } = await axios(requestConfig);
 
         if (players.length === 0) {
-            throw ('No player found.');
+            throw new errorResponse('No player found.', 404, false);
         }
 
         return players[0];
@@ -138,34 +101,6 @@ const getPlayerSummaries = async (steamId) => {
     }
 };
 
-/**
- * Get game stats from the steam id
- * @param {String} steamId - The user's steam id 
- * @returns {Promise<Object> | Error} - The user's game stats
- */
-const getUserGameStats = async (steamId) => {
-    try {
-
-        // The request config
-        const requestConfig = {
-            url: ' https://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v2/',
-            method: 'GET',
-            params: {
-                key: steamAPIKey,
-                steamid: steamId,
-                appid: gameId,
-            },
-        };
-
-        // Make the request
-        const { data: { playerstats, }, } = await axios(requestConfig);
-
-        return playerstats;
-
-    } catch (err) {
-        throw err;
-    }
-};
 
 /**
  * Get user's owned games count and tf2 game stats
@@ -219,6 +154,7 @@ const getOwnedGames = async (steamId) => {
  * @param {String} steamId - The user's steam id
  * @returns {Promise<Object> | Error} - The user's recently played games for the past 2 weeks
  */
+// eslint-disable-next-line no-unused-vars
 const getRecentlyPlayedGames = async (steamId) => {
     try {
         // The request config
@@ -237,10 +173,40 @@ const getRecentlyPlayedGames = async (steamId) => {
 
         // Check if the response is empty
         if (Object.keys(response).length === 0) {
-            throw ('No games found');
+            throw new errorResponse('No games found', 404, false);
         }
 
         return response;
+
+    } catch (err) {
+        throw err;
+    }
+};
+
+/**
+ * Get game stats from the steam id
+ * @param {String} steamId - The user's steam id 
+ * @returns {Promise<Object> | Error} - The user's game stats
+ */
+// eslint-disable-next-line no-unused-vars
+const getUserGameStats = async (steamId) => {
+    try {
+
+        // The request config
+        const requestConfig = {
+            url: ' https://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v2/',
+            method: 'GET',
+            params: {
+                key: steamAPIKey,
+                steamid: steamId,
+                appid: gameId,
+            },
+        };
+
+        // Make the request
+        const { data: { playerstats, }, } = await axios(requestConfig);
+
+        return playerstats;
 
     } catch (err) {
         throw err;
@@ -360,7 +326,7 @@ const getComments = async (steamId) => {
 
         // If it is a private profile
         if (!success) {
-            throw reason;
+            throw new errorResponse(reason, 403, false);
         }
 
         // Load comments html into cheerio
@@ -501,6 +467,7 @@ const trustFactorDataPreprocessing = async (steamId) => {
 };
 
 module.exports = { trustFactorDataPreprocessing, getSteamId, };
+
 // trustFactorDataPreprocessing('https://steamcommunity.com/id/MyDickHasTheSIzeOfAnAirport/')
 //     .then(data => console.log(data))
 //     .catch(err => console.log(err));

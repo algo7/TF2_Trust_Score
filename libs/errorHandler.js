@@ -1,11 +1,14 @@
 // Error handling middleware
+// eslint-disable-next-line no-unused-vars
 const errorHandler = async (err, req, res, next) => {
 
-    console.log(err);
+    if (err.logStack === true) {
+        console.log(err);
+    }
 
     return res
-        .status(500)
-        .json({ msg: 'Server Error', });
+        .status(err.statusCode || 500)
+        .json({ msg: err.message || 'Server Error', });
 
 };
 

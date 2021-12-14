@@ -9,7 +9,7 @@ const { Player_DB, } = require('../config/dbConnection');
 // @desc Get the trust factor of a player
 // @route POST /trust
 // @access Public
-const computeTrust = asyncHandler(async (req, res, next) => {
+const computeTrust = asyncHandler(async (req, res) => {
 
     // Get the profile url
     const { profileUrl, } = req.body;
@@ -27,9 +27,14 @@ const computeTrust = asyncHandler(async (req, res, next) => {
     processedData.trustFactor = trustFactorValue;
 
     // Save to the database
-    const result = await Player_DB.findOneAndUpdate({ steamid: steamId, }, processedData, { new: true, upsert: true, });
+    const result = await Player_DB
+        .findOneAndUpdate({ steamid: steamId, },
+            processedData, { new: true, upsert: true, })
+        .lean();
+
 
     res.status(200).json(result);
+
 });
 
 module.exports = { computeTrust, };
