@@ -126,7 +126,7 @@ const getOwnedGames = async (steamId) => {
 
         // Check if the response is empty
         // eslint-disable-next-line no-prototype-builtins
-        if (Object.keys(response).length === 0 || !Object.hasOwnProperty('games')) {
+        if (Object.keys(response).length === 0 || !response.hasOwnProperty('games')) {
             return {
                 gameCount: 0,
                 tf2Stats: {
@@ -493,7 +493,8 @@ const trustFactorDataPreprocessing = async (steamId) => {
 };
 
 module.exports = { trustFactorDataPreprocessing, getSteamId, getFriends, };
-
+getSteamId('https://steamcommunity.com/id/MONaH-Rasta/').then(x => console.log(x));
+getOwnedGames('76561198020822150').then(x => console.log(x));
 // trustFactorDataPreprocessing('https://steamcommunity.com/id/MyDickHasTheSIzeOfAnAirport/')
 //     .then(data => console.log(data))
 //     .catch(err => console.log(err));
