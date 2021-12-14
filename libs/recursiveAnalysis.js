@@ -5,36 +5,56 @@ const { trustFactor, } = require('./trust');
 // DB
 const { Player_DB, } = require('../config/dbConnection');
 
+/**
+ * Analyze the trust factor of all of the player's friends
+ * @param {String} profileUrl - The profile url of the player
+ * @returns {Promise<Object> | Erro}
+ */
 const recursiveAnalaysis = async (profileUrl) => {
+    try {
 
-    const userSteamId = await getSteamId(profileUrl);
-    const friendList = await getFriends(userSteamId);
-    const steamIds = friendList.map(friend => friend.steamid);
+        // Get the steam id of the player
+        const userSteamId = await getSteamId(profileUrl);
 
-    const analysisResults = await Promise.all(steamIds.map(async (id) => {
+        // Get the friends of the player
+        const friendList = await getFriends(userSteamId);
 
-        // Preprocess the data
-        const processedData = await trustFactorDataPreprocessing(id);
+        // Extract the steam id of the player's friends
+        const steamIds = friendList.map(friend => friend.steamid);
 
-        // Calculate the trust factor
-        const trustFactorValue = await trustFactor(processedData);
+        // Bulk preprocess the data
+        const analysisResults = await Promise.all(steamIds.map(async (id) => {
 
-        // Add trust factor to the processed data
-        processedData.trustFactor = trustFactorValue;
+            // Preprocess the data
+            const processedData = await trustFactorDataPreprocessing(id);
 
-        return processedData;
+            // Calculate the trust factor
+            const trustFactorValue = await trustFactor(processedData);
 
-    }));
+            // Add trust factor to the processed data
+            processedData.trustFactor = trustFactorValue;
 
-    const analysisResultsArray = analysisResults.map(result => ({
-        updateOne: {
-            filter: { steamid: result.steamid, },
-            update: result,
-            upsert: true,
-        },
-    }));
-    const { result, } = await Player_DB.bulkWrite(analysisResultsArray, { ordered: false, });
-    console.log(result);
+            return processedData;
+
+        }));
+
+        // Map the results to the mongodb schema
+        const analysisResultsArray = analysisResults.map(result => ({
+            updateOne: {
+                filter: { steamid: result.steamid, },
+                update: result,
+                upsert: true,
+            },
+        }));
+
+        // Bulk update the database
+        const { result, } = await Player_DB.bulkWrite(analysisResultsArray, { ordered: false, });
+
+        return result;
+
+    } catch (err) {
+        throw err;
+    }
 
 };
 
