@@ -404,8 +404,48 @@ const getFriendVacBans = async (friendList) => {
 
 };
 
-const trustFactorDataPreprocessing = () => {
+const trustFactorDataPreprocessing = async (profileUrl) => {
     try {
+
+        // Get steam id of the user from the profile url
+        const steamId = await getSteamId(profileUrl);
+
+        // Extract the profile visibility and the profile time of creation from the player summaries
+        const { communityvisibilitystate, timecreated, } = await getPlayerSummaries(steamId);
+
+        // User profile visibility
+        let profileVsibility = null;
+
+        if (communityvisibilitystate == 3) {
+            profileVsibility = true;
+        }
+
+        if (communityvisibilitystate === 1) {
+            profileVsibility = false;
+        }
+
+        // Time since creation in days
+        const timeSinceCreation = Math
+            .ceil((Date.now() - convertToDate(timecreated)) / (1000 * 3600 * 24));
+
+        // Get player's steam level
+        const steamLevel = await getSteamLevel(steamId);
+
+        // Get tf2 play time
+        const { gameCount, tf2Stats: { playtime_forever,
+            playtime_linux_forever, }, } = await getOwnedGames(steamId);
+
+
+
+        return {
+            timeSinceCreation,
+            profileVsibility,
+            steamLevel,
+            gameCount,
+            totalHours: playtime_forever / 60,
+            totalHoursLinux: Math.floor(playtime_linux_forever / 60),
+            totalHoursLinuxPercentage: playtime_linux_forever / playtime_forever,
+        };
 
     } catch (err) {
         throw err;
@@ -417,10 +457,10 @@ getSteamId('https://steamcommunity.com/id/avivlo0612/')
     .then(steamId => {
         console.log('steamID:', steamId);
         // Works regardless of the profile visibility
-        getPlayerSummaries(steamId).then(data => {
-            console.log(data);
+        // getPlayerSummaries(steamId).then(data => {
+        //     console.log(data);
 
-        }).catch(err => console.log(err));
+        // }).catch(err => console.log(err));
         // getBans([steamId]).then(data => console.log(data)).catch(err => console.log(err));
 
         // Return "TEXT_HERE" if the user profile is private
@@ -442,6 +482,10 @@ getSteamId('https://steamcommunity.com/id/avivlo0612/')
 
 
     }).catch(err => console.log(err));
+
+trustFactorDataPreprocessing('https://steamcommunity.com/id/avivlo0612/')
+    .then(data => console.log(data))
+    .catch(err => console.log(err));
 
 
 /**
