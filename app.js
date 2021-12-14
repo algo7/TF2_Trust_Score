@@ -4,6 +4,9 @@ const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const { routeCheck, } = require('express-suite');
 
+// Custom Modules
+const errorHandler = require('./libs/errorHandler');
+
 // Global variables
 const PORT = process.env.PORT || 9000;
 
@@ -46,6 +49,8 @@ const Main = require('./routes/main');
 // Use Routes
 app.use('/', Main);
 
+// Custom Error Handler
+app.use(errorHandler);
 
 // Route Check
 app.use(routeCheck(app));
