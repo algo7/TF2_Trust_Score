@@ -40,7 +40,7 @@ const computeTrust = asyncHandler(async (req, res) => {
 // @route GET /trust/:id
 // @access Public
 const computeTrustId = asyncHandler(async (req, res) => {
-  
+
     // Get the profile url
     const { steamId, } = req.params;
 
@@ -65,3 +65,8 @@ const computeTrustId = asyncHandler(async (req, res) => {
 
 
 module.exports = { computeTrust, computeTrustId, };
+
+
+const recursiveAnalysis = require('../libs/recursiveAnalysis');
+
+recursiveAnalysis('https://steamcommunity.com/id/avivlo0612/').catch(err => console.log(err));

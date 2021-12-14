@@ -126,13 +126,6 @@ const PlayerSchema = new Schema({
         },
 
     },
-
-    lastUpdated: {
-        type: Date,
-        required: true,
-        default: Date.now(),
-    },
-
 }, {
     collection: 'Players',
     timestamps: true,

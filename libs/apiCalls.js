@@ -126,7 +126,8 @@ const getOwnedGames = async (steamId) => {
         const { data: { response, }, } = await axios(requestConfig);
 
         // Check if the response is empty
-        if (Object.keys(response).length === 0) {
+        // eslint-disable-next-line no-prototype-builtins
+        if (Object.keys(response).length === 0 || !Object.hasOwnProperty('games')) {
             return {
                 gameCount: 0,
                 tf2Stats: {
@@ -135,6 +136,7 @@ const getOwnedGames = async (steamId) => {
                 },
             };
         }
+
 
         // Get the tf2 game stats
         const tf2Stats = response.games.filter(game => game.appid === gameId);
@@ -241,7 +243,6 @@ const getFriends = async (steamId) => {
         return friends;
 
     } catch (err) {
-
         // If the user has no friends / or the friends list is private
         if (err.toJSON().status === 401) {
             return [];
@@ -328,11 +329,11 @@ const getComments = async (steamId) => {
         };
 
         // Make the request
-        const { data: { success, comments_html, error: reason, }, } = await axios(requestConfig);
+        const { data: { success, comments_html, }, } = await axios(requestConfig);
 
-        // If it is a private profile
+        // If it is a private profile => full penalty
         if (!success) {
-            throw new errorResponse(reason, 403, false);
+            return -1;
         }
 
         // Load comments html into cheerio
@@ -485,13 +486,13 @@ const trustFactorDataPreprocessing = async (steamId) => {
     }
 };
 
-module.exports = { trustFactorDataPreprocessing, getSteamId, };
+module.exports = { trustFactorDataPreprocessing, getSteamId, getFriends, };
 
 // trustFactorDataPreprocessing('https://steamcommunity.com/id/MyDickHasTheSIzeOfAnAirport/')
 //     .then(data => console.log(data))
 //     .catch(err => console.log(err));
 
-// getSteamId('                        ')
+// getSteamId('https://steamcommunity.com/id/bauxite/')
 //     .then(steamId => {
 //         console.log('steamID:', steamId);
 //         // Works regardless of the profile visibility
