@@ -136,13 +136,17 @@ const getOwnedGames = async (steamId) => {
             };
         }
 
+        // Get the tf2 game stats
         const tf2Stats = response.games.filter(game => game.appid === gameId);
 
         return {
             gameCount: response.game_count,
-            tf2Stats: tf2Stats[0],
+            // Account for user not having / has hidden tf2 in/from their inventories
+            tf2Stats: tf2Stats[0] || {
+                playtime_forever: 0,
+                playtime_linux_forever: 0,
+            },
         };
-
 
     } catch (err) {
         throw err;
@@ -404,13 +408,6 @@ const trustFactorDataPreprocessing = async (steamId) => {
             profileVsibility = false;
         }
 
-        // Time since creation in days
-        const timeSinceCreation = Math
-            .ceil((Date.now() - convertToDate(timecreated)) / (1000 * 3600 * 24));
-
-        // Get player's steam level
-        const steamLevel = await getSteamLevel(steamId);
-
         // VAC Ban data
         const bans = await getBans([steamId]);
 
@@ -429,6 +426,14 @@ const trustFactorDataPreprocessing = async (steamId) => {
                 playerSummary,
             };
         }
+
+        // Time since creation in days
+        const timeSinceCreation = Math
+            .ceil((Date.now() - convertToDate(timecreated)) / (1000 * 3600 * 24));
+
+        // Get player's steam level
+        const steamLevel = await getSteamLevel(steamId);
+
 
         // Get tf2 play time
         const { gameCount, tf2Stats: { playtime_forever,
