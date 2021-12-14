@@ -3,9 +3,8 @@ const { default: axios, } = require('axios');
 const { SentimentAnalyzer, PorterStemmer, } = require('natural');
 const analyzer = new SentimentAnalyzer('English', PorterStemmer, 'afinn');
 const cheerio = require('cheerio');
-
 // Custom Modules
-const { dataPrep, convertToDate, } = require('./utils');
+const { dataPrep, convertToDate, chunkArray, } = require('./utils');
 
 // Creds
 const { steamAPIKey, } = require('../creds.json');
@@ -377,12 +376,19 @@ const getFriendVacBansPercentage = async (friendList) => {
         if (friendList.length === 0) {
             return 1;
         }
-
+    
         // Extract the steam ids from the friend list
         const steamIds = friendList.map(friend => friend.steamid);
 
+        // Split the steam ids into chunks of 100 (the getBan api limit is 100 ids)
+        const splitted2DArrays = chunkArray(steamIds, 100);
+
+        // Get the ban info for each chunk
+        const banResults = await Promise
+            .all(splitted2DArrays.map(async (array) => await getBans(array)));
+
         // Get ban info for all the steam ids
-        const bans = await getBans(steamIds);
+        const bans = banResults.flat();
 
         // Filter out ids that have VAC Bans
         const banned = bans.filter(ban => ban.VACBanned === true).length;
