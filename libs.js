@@ -479,65 +479,39 @@ const trustFactorDataPreprocessing = async (profileUrl) => {
     }
 };
 
-
-getSteamId('https://steamcommunity.com/id/avivlo0612/')
-    .then(steamId => {
-        console.log('steamID:', steamId);
-        // Works regardless of the profile visibility
-        // getPlayerSummaries(steamId).then(data => {
-        //     console.log(data);
-
-        // }).catch(err => console.log(err));
-        // getBans([steamId]).then(data => console.log(data)).catch(err => console.log(err));
-
-        // Return "TEXT_HERE" if the user profile is private
-        // getOwnedGames(steamId).then(data => console.log(data)).catch(err => console.log(err));
-        // getRecentlyPlayedGames(steamId).then(data => console.log(data)).catch(err => console.log(err));
-        // getComments(steamId).then(data => console.log(data)).catch(err => console.log(err));
-
-        // Throws err if the profile is private
-        // getFriends(steamId).then(data => {
-        //     // console.log(data);
-        //     getFriendVacBans(data).then(data => console.log(data));
-        // }).catch(err => console.log(err));
-
-        // Returns undefined if the profile is private
-        // getSteamLevel(steamId).then(data => console.log(data)).catch(err => console.log(err));
-
-        // Error-prone
-        // getUserGameStats(steamId).then(data => console.log(data));
+module.exports = { trustFactorDataPreprocessing, };
 
 
-    }).catch(err => console.log(err));
+// getSteamId('https://steamcommunity.com/id/avivlo0612/')
+//     .then(steamId => {
+//         console.log('steamID:', steamId);
+//         // Works regardless of the profile visibility
+//         // getPlayerSummaries(steamId).then(data => {
+//         //     console.log(data);
 
-trustFactorDataPreprocessing('https://steamcommunity.com/profiles/76561198962558280/')
-    .then(data => console.log(data))
-    .catch(err => console.log(err));
+//         // }).catch(err => console.log(err));
+//         // getBans([steamId]).then(data => console.log(data)).catch(err => console.log(err));
+
+//         // Return "TEXT_HERE" if the user profile is private
+//         // getOwnedGames(steamId).then(data => console.log(data)).catch(err => console.log(err));
+//         // getRecentlyPlayedGames(steamId).then(data => console.log(data)).catch(err => console.log(err));
+//         // getComments(steamId).then(data => console.log(data)).catch(err => console.log(err));
+
+//         // Throws err if the profile is private
+//         // getFriends(steamId).then(data => {
+//         //     // console.log(data);
+//         //     getFriendVacBans(data).then(data => console.log(data));
+//         // }).catch(err => console.log(err));
+
+//         // Returns undefined if the profile is private
+//         // getSteamLevel(steamId).then(data => console.log(data)).catch(err => console.log(err));
+
+//         // Error-prone
+//         // getUserGameStats(steamId).then(data => console.log(data));
 
 
-/**
- * Compute the trust factor for the given user
- * @param {Object} info - The user's info object
- * @returns {Number} - The user's trust factor
- */
-const trustFactor = (info) => {
-    try {
-        // const a = {
-        //     timeSinceCreation: 1709,
-        //     profileVsibility: true,
-        //     steamLevel: 10,
-        //     gameCount: 15,
-        //     friendVACBanPercentage: 0.08771929824561403,
-        //     commentSentimentScore: 0.05328269126424308,
-        //     totalHours: 4447.266666666666,
-        //     totalHoursLinux: 41,
-        //     totalHoursLinuxPercentage: 0.009436507817535864,
-        //     friendCount: 285,
-        // };
+//     }).catch(err => console.log(err));
 
-        // { profileVsibility: false, timeSinceCreation: 0, steamLevel: 0 }
-        console.log(info);
-    } catch (err) {
-        throw err;
-    }
-};
+// trustFactorDataPreprocessing('https://steamcommunity.com/profiles/76561198962558280/')
+//     .then(data => console.log(data))
+//     .catch(err => console.log(err));
