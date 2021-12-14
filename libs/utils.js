@@ -45,5 +45,20 @@ const convertToDate = (date) => {
     }
 };
 
+/**
+ * Returns an array with arrays of the given size.
+ * @param {Array} myArray - Array to split
+ * @param {Integer} chunkSize - Size of every group
+ * @returns {<Array<Array>> | Error} - The splitted array
+ */
+const chunkArray = (myArray, chunkSize) => {
+    const results = [];
 
-module.exports = { convertToDate, dataPrep, };
+    while (myArray.length) {
+        results.push(myArray.splice(0, chunkSize));
+    }
+
+    return results;
+};
+
+module.exports = { dataPrep, convertToDate, chunkArray, };
