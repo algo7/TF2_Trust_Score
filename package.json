@@ -4,7 +4,10 @@
   "description": "TF2 Trust Score System",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "NODE_ENV=local nodemon --signal SIGHUP app.js",
+    "update": "npx npm-check-updates -u",
+    "check": "npm outdated"
   },
   "repository": {
     "type": "git",
