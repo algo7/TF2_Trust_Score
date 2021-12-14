@@ -18,7 +18,6 @@ const steamProfileRegExSteamId = /https:\/\/steamcommunity.com\/profiles\/[0-9]{
 const gameId = 440;
 
 // Utility Functions
-
 /**
  * Pre-process the text for sentiment analysis
  * @param {String} text - The text to be processed
