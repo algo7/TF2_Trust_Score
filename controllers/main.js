@@ -27,7 +27,7 @@ const computeTrust = asyncHandler(async (req, res, next) => {
     processedData.trustFactor = trustFactorValue;
 
     // Save to the database
-    const result = await Player_DB.create(processedData);
+    const result = await Player_DB.findOneAndUpdate({ steamid: steamId, }, processedData, { new: true, upsert: true, });
 
     res.status(200).json(result);
 });
