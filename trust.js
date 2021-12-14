@@ -95,12 +95,12 @@ module.exports = { trustFactor, };
 
 const { trustFactorDataPreprocessing, } = require('./libs');
 
-const test = async () => {
-    const data = await trustFactorDataPreprocessing('https://steamcommunity.com/profiles/76561198024593212/');
-    console.log(data);
-    const trustScore = await trustFactor(data);
+// const test = async () => {
+//     const data = await trustFactorDataPreprocessing('https://steamcommunity.com/profiles/76561198024593212/');
 
-    return trustScore;
-};
+//     const trustScore = await trustFactor(data);
 
-test().then(x => console.log(x)).catch(x => console.log(x));
+//     return trustScore;
+// };
+
+// test().then(x => console.log(x)).catch(x => console.log(x));
