@@ -93,7 +93,7 @@ const trustFactor = (info) => {
 
 module.exports = { trustFactor, };
 
-const { trustFactorDataPreprocessing, } = require('./libs');
+// const { trustFactorDataPreprocessing, } = require('./libs');
 
 // const test = async () => {
 //     const data = await trustFactorDataPreprocessing('https://steamcommunity.com/profiles/76561198024593212/');
