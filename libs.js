@@ -192,7 +192,13 @@ const getOwnedGames = async (steamId) => {
 
         // Check if the response is empty
         if (Object.keys(response).length === 0) {
-            throw ('No games found');
+            return {
+                gameCount: 0,
+                tf2Stats: {
+                    playtime_forever: 0,
+                    playtime_linux_forever: 0,
+                },
+            };
         }
 
         const tf2Stats = response.games.filter(game => game.appid === gameId);
@@ -420,7 +426,9 @@ const trustFactorDataPreprocessing = async (profileUrl) => {
         const steamId = await getSteamId(profileUrl);
 
         // Extract the profile visibility and the profile time of creation from the player summaries
-        const { communityvisibilitystate, timecreated, } = await getPlayerSummaries(steamId);
+        const playerSummary = await getPlayerSummaries(steamId);
+
+        const { communityvisibilitystate, timecreated, } = playerSummary;
 
         // User profile visibility
         let profileVsibility = null;
@@ -484,6 +492,7 @@ const trustFactorDataPreprocessing = async (profileUrl) => {
             totalHoursLinux: Math.floor(playtime_linux_forever / 60),
             totalHoursLinuxPercentage: playtime_linux_forever / playtime_forever,
             friendCount: friendList.length,
+            playerSummary,
         };
 
     } catch (err) {

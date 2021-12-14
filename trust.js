@@ -27,8 +27,12 @@ const trustFactor = (info) => {
             trustFactor -= 20;
         }
 
-        if (steamLevel < 5 && gameCount <= 2) {
+        if (steamLevel < 5 && gameCount <= 2 && gameCount > 0) {
             trustFactor -= 5;
+        }
+
+        if (gameCount <= 0) {
+            trustFactor -= 10;
         }
 
         // Friend count
@@ -92,7 +96,7 @@ module.exports = { trustFactor, };
 const { trustFactorDataPreprocessing, } = require('./libs');
 
 const test = async () => {
-    const data = await trustFactorDataPreprocessing('https://steamcommunity.com/id/poisongloom/');
+    const data = await trustFactorDataPreprocessing('https://steamcommunity.com/profiles/76561198024593212/');
     console.log(data);
     const trustScore = await trustFactor(data);
 
