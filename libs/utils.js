@@ -64,11 +64,10 @@ const chunkArray = (myArray, chunkSize) => {
 
 /**
  * Genrate a random UUID
- * @returns {Promise<String | Error> } the uuid
+ * @returns {String | Error> } the uuid
  **/
-const uuidGen = async () => {
+const uuidGen = () => {
     try {
-
         // Gen the uuid
         const uuid = randomUUID({
             disableEntropyCache: false,
@@ -79,6 +78,6 @@ const uuidGen = async () => {
         throw err;
     }
 };
-
+console.log(uuidGen());
 
 module.exports = { dataPrep, convertToDate, chunkArray, uuidGen, };

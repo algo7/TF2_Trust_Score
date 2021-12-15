@@ -1,8 +1,10 @@
 // Custom Modules
 const asyncHandler = require('../libs/asyncHandler');
+const bulkAnalysis = require('../libs/bulkAnalysis');
 const { trustFactor, } = require('../libs/trust');
 const { trustFactorDataPreprocessing, getSteamId, } = require('../libs/apiCalls');
-const bulkAnalysis = require('../libs/bulkAnalysis');
+const { uuidGen, } = require('../libs/utils');
+
 
 // DB
 const { Player_DB, } = require('../config/dbConnection');
@@ -33,7 +35,7 @@ const computeTrust = asyncHandler(async (req, res) => {
         .lean();
 
     // Set the cookie
-    res.cookie('token', '123', {
+    res.cookie('id', uuidGen(), {
         expires: new Date(Date.now() + 20 * 60 * 1000),
         httpOnly: true,
     });
