@@ -14,12 +14,16 @@ const { PlayerSchema, } = require('../models/Players');
 const DB_Connection = mongoose.createConnection(Mongo_Local_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    autoCreate: true,
 });
 
 // Connect to the DB
 DB_Connection
     .on('open', () => console.info('DB Connected'))
-    .on('error', err => console.error('Error Connecting to DB' + ' ' + err));
+    .on('error', err => {
+        console.error('Error Connecting to DB' + ' ' + err);
+        process.exit(1);
+    });
 
 
 
