@@ -3,8 +3,6 @@ const asyncHandler = require('../libs/asyncHandler');
 const bulkAnalysis = require('../libs/bulkAnalysis');
 const { trustFactor, } = require('../libs/trust');
 const { trustFactorDataPreprocessing, getSteamId, } = require('../libs/apiCalls');
-const { uuidGen, } = require('../libs/utils');
-
 
 // DB
 const { Player_DB, } = require('../config/dbConnection');
@@ -33,12 +31,6 @@ const computeTrust = asyncHandler(async (req, res) => {
     const result = await Player_DB
         .findOneAndUpdate({ steamid: steamId, }, processedData, { new: true, upsert: true, })
         .lean();
-
-    // Set the cookie
-    res.cookie('id', uuidGen(), {
-        expires: new Date(Date.now() + 20 * 60 * 1000),
-        httpOnly: true,
-    });
 
     res.status(200).json(result);
 
