@@ -6,7 +6,7 @@ const { routeCheck, } = require('express-suite');
 
 // Custom Modules
 const errorHandler = require('./libs/errorHandler');
-const ensureUUID = require('./libs/ensureUUID');
+const rateLimit = require('./libs/rateLimit');
 
 // Global variables
 const PORT = process.env.PORT || 9000;
@@ -41,7 +41,7 @@ app.use(express.text({
 app.use(cookieParser());
 
 // Ensure Auth
-app.use(ensureUUID);
+app.use(rateLimit);
 
 /**
  * All routes go here

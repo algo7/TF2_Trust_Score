@@ -1,9 +1,9 @@
 // Custom Modules
 const redisClient = require('../config/redisConnection');
-const { uuidGen, } = require('../libs/utils');
+const { uuidGen, } = require('./utils');
 
 // Check for the UUID otherwise generate a new one
-const ensureUUID = async (req, res, next) => {
+const rateLimit = async (req, res, next) => {
     try {
 
         // Connect to redis
@@ -74,4 +74,4 @@ const ensureUUID = async (req, res, next) => {
     }
 };
 
-module.exports = ensureUUID;
+module.exports = rateLimit;
