@@ -412,9 +412,19 @@ const getFriendVacBansPercentage = async (friendList) => {
 const trustFactorDataPreprocessing = async (steamId) => {
     try {
 
-        // Extract the profile visibility and the profile time of creation from the player summaries
-        const playerSummary = await getPlayerSummaries(steamId);
 
+        const [playerSummary, bans] = await Promise.all([
+            // Extract the player summaries
+            getPlayerSummaries(steamId),
+
+            // VAC Ban data
+            getBans([steamId])
+        ]);
+
+        // Extract bans data
+        const { VACBanned, NumberOfVACBans, } = bans[0];
+
+        // Extract the profile visibility and the profile time of creation from the player summaries
         const { steamid, communityvisibilitystate, timecreated, } = playerSummary;
 
         // User profile visibility
@@ -427,11 +437,6 @@ const trustFactorDataPreprocessing = async (steamId) => {
         if (communityvisibilitystate === 1) {
             profileVsibility = false;
         }
-
-        // VAC Ban data
-        const bans = await getBans([steamId]);
-
-        const { VACBanned, NumberOfVACBans, } = bans[0];
 
         // Handles private profiles
         if (!profileVsibility) {
@@ -450,24 +455,29 @@ const trustFactorDataPreprocessing = async (steamId) => {
         // Time since creation in days
         const timeSinceCreation = Math
             .ceil((Date.now() - convertToDate(timecreated)) / (1000 * 3600 * 24));
+        
 
-        // Get player's steam level
-        const steamLevel = await getSteamLevel(steamId);
+        const [steamLevel, { gameCount, tf2Stats: { playtime_forever,
+            playtime_linux_forever, }, }, friendList, commentSentimentScore] = await Promise
+                .all([
+                    // Get player's steam level
+                    getSteamLevel(steamId),
+
+                    // Get tf2 play time
+                    getOwnedGames(steamId),
+
+                    // Get friends
+                    getFriends(steamId),
+
+                    // Get comment's sentiment score
+                    getComments(steamId)
+                ]);
 
 
-        // Get tf2 play time
-        const { gameCount, tf2Stats: { playtime_forever,
-            playtime_linux_forever, }, } = await getOwnedGames(steamId);
-
-
-        // Get friends
-        const friendList = await getFriends(steamId);
 
         // Friend list with VAC Bans %
         const friendVACBanPercentage = await getFriendVacBansPercentage(friendList);
 
-        // Get comment's sentiment score
-        const commentSentimentScore = await getComments(steamId);
 
         return {
             steamid,
@@ -493,8 +503,8 @@ const trustFactorDataPreprocessing = async (steamId) => {
 };
 
 module.exports = { trustFactorDataPreprocessing, getSteamId, getFriends, };
-getSteamId('https://steamcommunity.com/id/MONaH-Rasta/').then(x => console.log(x));
-getOwnedGames('76561198020822150').then(x => console.log(x));
+// getSteamId('https://steamcommunity.com/id/MONaH-Rasta/').then(x => console.log(x));
+// getOwnedGames('76561198020822150').then(x => console.log(x));
 // trustFactorDataPreprocessing('https://steamcommunity.com/id/MyDickHasTheSIzeOfAnAirport/')
 //     .then(data => console.log(data))
 //     .catch(err => console.log(err));
