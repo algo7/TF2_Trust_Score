@@ -32,6 +32,11 @@ const computeTrust = asyncHandler(async (req, res) => {
         .findOneAndUpdate({ steamid: steamId, }, processedData, { new: true, upsert: true, })
         .lean();
 
+    // Set the cookie
+    res.cookie('token', '123', {
+        expires: new Date(Date.now() + 20 * 60 * 1000),
+        httpOnly: true,
+    });
 
     res.status(200).json(result);
 

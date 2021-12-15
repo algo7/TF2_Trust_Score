@@ -1,4 +1,5 @@
 // Dependencies
+const { randomUUID, } = require('crypto');
 const standardLex = require('apos-to-lex-form');
 const { WordTokenizer, } = require('natural');
 const tokenizer = new WordTokenizer;
@@ -61,4 +62,23 @@ const chunkArray = (myArray, chunkSize) => {
     return results;
 };
 
-module.exports = { dataPrep, convertToDate, chunkArray, };
+/**
+ * Genrate a random UUID
+ * @returns {Promise<String | Error> } the uuid
+ **/
+const uuidGen = async () => {
+    try {
+
+        // Gen the uuid
+        const uuid = randomUUID({
+            disableEntropyCache: false,
+        });
+        return uuid;
+
+    } catch (err) {
+        throw err;
+    }
+};
+
+
+module.exports = { dataPrep, convertToDate, chunkArray, uuidGen, };
