@@ -20,6 +20,7 @@ const rateLimit = async (req, res, next) => {
             // Generate a new UUID
             const newUuid = uuidGen();
 
+            // Set the uuid data in req
             req.uuidData = {
                 uuid: newUuid,
                 requestCount: 1,
@@ -43,15 +44,24 @@ const rateLimit = async (req, res, next) => {
         }
 
 
+        // If the rate limit is exceeded
+        if (uuidInfo >= 2) {
+
+            await redisClient.quit();
+
+            return res.status(429).json({
+                message: 'Rate limit exceeded',
+            });
+        }
+
         // Increase the request count by 1
         const requestCount = await redisClient.incrBy(uuid, 1);
 
-        // Set the uuid in req
+        // Set the uuid data in req
         req.uuidData = {
             uuid,
             requestCount,
         };
-
 
         // Close the connection
         await redisClient.quit();
