@@ -25,7 +25,7 @@ const rateLimit = async (req, res, next) => {
 
             // Store the uuid and request count: exp = 1 min
             await redisClient.set(newUuid, 1, {
-                EX: 60 * 1000,
+                EX: 60,
             });
 
             // Set the cookie: exp = 1 min
@@ -39,7 +39,7 @@ const rateLimit = async (req, res, next) => {
 
 
         // If the rate limit is exceeded
-        if (uuidInfo >= 2) {
+        if (uuidInfo >= 20) {
 
             return res.status(429).json({
                 message: 'Rate limit exceeded',
