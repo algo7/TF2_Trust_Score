@@ -33,7 +33,8 @@
     "express-handlebars": "^6.0.2",
     "express-suite": "^1.6.3",
     "mongoose": "^6.1.1",
-    "natural": "^5.1.11"
+    "natural": "^5.1.11",
+    "redis": "^4.0.1"
   },
   "devDependencies": {
     "eslint": "^8.4.1"

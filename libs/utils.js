@@ -78,6 +78,6 @@ const uuidGen = () => {
         throw err;
     }
 };
-console.log(uuidGen());
+
 
 module.exports = { dataPrep, convertToDate, chunkArray, uuidGen, };
