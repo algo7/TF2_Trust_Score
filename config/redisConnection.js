@@ -1,10 +1,19 @@
 // Dependencies
-const redis = require('redis');
+const { createClient, } = require('redis');
 
 // Redis client options
 const redisOptions = {
-    host: '127.0.0.1',
-    port: process.env.redisPort || '6379',
-    password: undefined,
-    retry_strategy: () => 1000,
+    socket: {
+        host: '127.0.0.1',
+        port: 6379,
+        reconnectStrategy: () => 1000,
+    },
+    username: '',
+    password: '',
 };
+
+// Create the redis client
+const redisClient = createClient(redisOptions);
+
+
+module.exports = redisClient;
