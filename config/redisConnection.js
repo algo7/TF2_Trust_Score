@@ -15,5 +15,12 @@ const redisOptions = {
 // Create the redis client
 const redisClient = createClient(redisOptions);
 
+redisClient.connect()
+    .then(() => console.log('Redis Connected'))
+    .catch(err => {
+        console.log(err);
+        process.exit(1);
+    });
+
 
 module.exports = redisClient;

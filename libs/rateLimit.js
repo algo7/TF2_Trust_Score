@@ -6,9 +6,6 @@ const { uuidGen, } = require('./utils');
 const rateLimit = async (req, res, next) => {
     try {
 
-        // Connect to redis
-        await redisClient.connect();
-
         // Extract the cookie
         const uuid = req.cookies.id || 'none';
 
@@ -26,19 +23,16 @@ const rateLimit = async (req, res, next) => {
                 requestCount: 1,
             };
 
-            // Store the uuid and request count
+            // Store the uuid and request count: exp = 1 min
             await redisClient.set(newUuid, 1, {
-                EX: 20 * 60 * 1000,
+                EX: 60 * 1000,
             });
 
-            // Set the cookie
+            // Set the cookie: exp = 1 min
             res.cookie('id', newUuid, {
-                expires: new Date(Date.now() + 20 * 60 * 1000),
+                expires: new Date(Date.now() + 60 * 1000),
                 httpOnly: true,
             });
-
-            // Close the connection
-            await redisClient.quit();
 
             return next();
         }
@@ -46,8 +40,6 @@ const rateLimit = async (req, res, next) => {
 
         // If the rate limit is exceeded
         if (uuidInfo >= 2) {
-
-            await redisClient.quit();
 
             return res.status(429).json({
                 message: 'Rate limit exceeded',
@@ -63,24 +55,14 @@ const rateLimit = async (req, res, next) => {
             requestCount,
         };
 
-        // Close the connection
-        await redisClient.quit();
-
         return next();
 
     } catch (err) {
+
         console.log(err);
-
-        // Set the auth status
-        req.uuidData = false;
-
-        // Set the cookie to none and expire it in 5 sec
-        res.cookie('id', 'none', {
-            expires: new Date(Date.now() + 5 * 1000),
-            httpOnly: true,
+        return res.status(500).json({
+            message: 'Server Error',
         });
-
-        return next();
     }
 };
 
