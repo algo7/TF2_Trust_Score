@@ -6,7 +6,10 @@
 const trustFactor = (info) => {
     try {
 
+        // Base trust factor
         let trustFactor = 100;
+
+
         const { timeSinceCreation, profileVsibility, steamLevel,
             gameCount, friendVACBanPercentage, commentSentimentScore,
             totalHours, totalHoursLinux, totalHoursLinuxPercentage,
