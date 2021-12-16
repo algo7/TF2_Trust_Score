@@ -89,8 +89,11 @@ const getPlayerSummaries = async (steamId) => {
         // Make the request
         const { data: { response: { players, }, }, } = await axios(requestConfig);
 
+        // Some steam id leads to no results
         if (players.length === 0) {
-            throw new errorResponse(`No player found. ${steamId}: ${players}`, 404, false);
+            return {
+                steamid: steamId,
+            };
         }
 
         return players[0];
