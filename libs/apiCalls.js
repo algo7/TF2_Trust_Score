@@ -355,6 +355,11 @@ const getComments = async (steamId) => {
         // Perform sentiment analysis on the comments
         const analysis = analyzer.getSentiment(processedData);
 
+        // Fix "natural lib sometimes returns NaN"
+        if (!analysis.score === 0) {
+            return 0;
+        }
+
         return analysis;
 
     } catch (err) {
