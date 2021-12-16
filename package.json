@@ -34,7 +34,9 @@
     "express-suite": "^1.6.3",
     "mongoose": "^6.1.1",
     "natural": "^5.1.11",
-    "redis": "^4.0.1"
+    "redis": "^4.0.1",
+    "sentiment": "^5.0.2",
+    "stopword": "^1.0.11"
   },
   "devDependencies": {
     "eslint": "^8.4.1"

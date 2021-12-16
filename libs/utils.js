@@ -1,6 +1,7 @@
 // Dependencies
 const { randomUUID, } = require('crypto');
 const standardLex = require('apos-to-lex-form');
+const sw = require('stopword');
 const { WordTokenizer, } = require('natural');
 const tokenizer = new WordTokenizer;
 
@@ -27,7 +28,9 @@ const dataPrep = (text) => {
         // Tokenize strings
         const tokenized = tokenizer.tokenize(alphaOnly);
 
-        return tokenized;
+        const tokenizedWithoutStopWords = sw.removeStopwords(tokenized);
+
+        return tokenizedWithoutStopWords;
 
     } catch (err) {
         throw err;
