@@ -43,10 +43,6 @@ const trustFactor = (info) => {
             trustFactor -= 5;
         }
 
-        if (!friendVACBanPercentage) {
-            trustFactor -= 10;
-        }
-
         // VAC banned friends
         if (friendVACBanPercentage > 0) {
             trustFactor -= 5;
