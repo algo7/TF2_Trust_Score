@@ -90,7 +90,7 @@ const getPlayerSummaries = async (steamId) => {
         const { data: { response: { players, }, }, } = await axios(requestConfig);
 
         if (players.length === 0) {
-            throw new errorResponse('No player found.', 404, false);
+            throw new errorResponse(`No player found. ${steamId}: ${players}`, 404, false);
         }
 
         return players[0];
@@ -455,7 +455,7 @@ const trustFactorDataPreprocessing = async (steamId) => {
         // Time since creation in days
         const timeSinceCreation = Math
             .ceil((Date.now() - convertToDate(timecreated)) / (1000 * 3600 * 24));
-        
+
 
         const [steamLevel, { gameCount, tf2Stats: { playtime_forever,
             playtime_linux_forever, }, }, friendList, commentSentimentScore] = await Promise
@@ -508,33 +508,3 @@ module.exports = { trustFactorDataPreprocessing, getSteamId, getFriends, };
 // trustFactorDataPreprocessing('https://steamcommunity.com/id/MyDickHasTheSIzeOfAnAirport/')
 //     .then(data => console.log(data))
 //     .catch(err => console.log(err));
-
-// getSteamId('https://steamcommunity.com/id/bauxite/')
-//     .then(steamId => {
-//         console.log('steamID:', steamId);
-//         // Works regardless of the profile visibility
-//         // getPlayerSummaries(steamId).then(data => {
-//         //     console.log(data);
-
-//         // }).catch(err => console.log(err));
-//         // getBans([steamId]).then(data => console.log(data)).catch(err => console.log(err));
-
-//         // Return "TEXT_HERE" if the user profile is private
-//         // getOwnedGames(steamId).then(data => console.log(data)).catch(err => console.log(err));
-//         // getRecentlyPlayedGames(steamId).then(data => console.log(data)).catch(err => console.log(err));
-//         // getComments(steamId).then(data => console.log(data)).catch(err => console.log(err));
-
-//         // Throws err if the profile is private
-//         // getFriends(steamId).then(data => {
-//         //     // console.log(data);
-//         //     getFriendVacBans(data).then(data => console.log(data));
-//         // }).catch(err => console.log(err));
-
-//         // Returns undefined if the profile is private
-//         // getSteamLevel(steamId).then(data => console.log(data)).catch(err => console.log(err));
-
-//         // Error-prone
-//         // getUserGameStats(steamId).then(data => console.log(data));
-
-
-//     }).catch(err => console.log(err));
