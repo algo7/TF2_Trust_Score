@@ -91,8 +91,10 @@ const getPlayerSummaries = async (steamId) => {
 
         // Some steam id leads to no results
         if (players.length === 0) {
+            console.log(`No results for steam id: ${steamId}`);
             return {
                 steamid: steamId,
+                communityvisibilitystate: 1,
             };
         }
 
