@@ -439,12 +439,12 @@ const trustFactorDataPreprocessing = async (steamId) => {
 
         // User profile visibility
         let profileVsibility = null;
-
+        console.log(communityvisibilitystate);
         if (communityvisibilitystate == 3) {
             profileVsibility = true;
         }
 
-        if (communityvisibilitystate === 1) {
+        if (communityvisibilitystate === 1 || communityvisibilitystate === 2) {
             profileVsibility = false;
         }
 
