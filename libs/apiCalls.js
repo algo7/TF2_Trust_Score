@@ -458,7 +458,7 @@ const trustFactorDataPreprocessing = async (steamId) => {
                 steamLevel: 0,
                 VACBanned,
                 NumberOfVACBans,
-                playerSummary,
+                // playerSummary,
             };
         }
 
@@ -504,7 +504,7 @@ const trustFactorDataPreprocessing = async (steamId) => {
             // Account for 0 hour played on tf2
             totalHoursLinuxPercentage: playtime_linux_forever / playtime_forever || 0,
             friendCount: friendList.length,
-            playerSummary,
+            // playerSummary,
         };
 
     } catch (err) {
@@ -513,8 +513,11 @@ const trustFactorDataPreprocessing = async (steamId) => {
 };
 
 module.exports = { trustFactorDataPreprocessing, getSteamId, getFriends, };
-// getSteamId('https://steamcommunity.com/id/MONaH-Rasta/').then(x => console.log(x));
+
 // getOwnedGames('76561198020822150').then(x => console.log(x));
-// trustFactorDataPreprocessing('https://steamcommunity.com/id/MyDickHasTheSIzeOfAnAirport/')
-//     .then(data => console.log(data))
-//     .catch(err => console.log(err));
+getSteamId('https://steamcommunity.com/id/MONaH-Rasta/')
+    .then(x => {
+        trustFactorDataPreprocessing(x)
+            .then(data => console.log(data))
+            .catch(err => console.log(err));
+    });
